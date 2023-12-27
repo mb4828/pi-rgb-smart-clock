@@ -8,50 +8,101 @@ import requests
 
 from config import TOMORROWIO_API_KEY, TOMORROWIO_ZIP_CODE
 
-EXTERNAL_CHECK_INTERVAL = 5 # new data every 5 minutes
-last_external_check = datetime(1990,1,1)
-cached_data = {}
+class Api:
+    FETCH_INTEVAL = 10  # new data every 10 minutes
+    last_fetch = datetime(1990,1,1)
+    cached_data = {}
 
-""" Gets weather data from tomorrow.io """
-def get_weather():
-    try:
-        request = requests.get(
-            'https://api.tomorrow.io/v4/weather/realtime',
-            params={
-                "location": TOMORROWIO_ZIP_CODE,
-                "units": "imperial",
-                "apikey": TOMORROWIO_API_KEY
-            }
-        )
-        request.raise_for_status()
-        data = request.json()["data"]["values"]
-        return {
-            'temp': round(data.get('temperature', 0)), 
-            'humidity': round(data.get('humidity', 0)), 
-            'icon': data.get('weatherCode')
-        }
-    except requests.exceptions.RequestException as e:
-        print(f"Request failed. Error: {e}")
-        return {}
+    @staticmethod
+    def _fetch():
+        pass # override this method
+
+    @classmethod
+    def fetch(cls):
+        if cls.is_cache_expired():
+            cls.cached_data = cls._fetch()
+            cls.last_fetch = datetime.now()
+        return cls.cached_data
+
+    @classmethod
+    def is_cache_expired(cls):
+        return cls.last_fetch + timedelta(minutes=cls.FETCH_INTEVAL) < datetime.now()
     
-
-""" Gets stock data from Yahoo finance """
-def get_stocks():
-    stock_list = ['^GSPC','^DJI','^IXIC']
-    results = []
-    try:
-        request = requests.get(f'https://finance.yahoo.com/')
-        request.raise_for_status()
-        data = request.text
-        soup = BeautifulSoup(data, 'html.parser')
-        for stock in stock_list:
-            price = soup.find(attrs={'data-symbol': stock, 'data-field': 'regularMarketPrice'})
-            change = soup.find(attrs={'data-symbol': stock, 'data-field': 'regularMarketChangePercent'})
-            if price and change:
-                results.append({'ticker': stock, 'price': float(price['value']), 'change': round(float(change['value']), 2)})
-    except requests.exceptions.RequestException as e:
-        print(f"Request failed. Error: {e}")
-    return results
+class WeatherApi(Api):
+    def _fetch():
+        try:
+            request = requests.get(
+                'https://api.tomorrow.io/v4/weather/realtime',
+                params={
+                    "location": TOMORROWIO_ZIP_CODE,
+                    "units": "imperial",
+                    "apikey": TOMORROWIO_API_KEY
+                }
+            )
+            request.raise_for_status()
+            data = request.json()["data"]["values"]
+            return {
+                'temp': round(data.get('temperature', 0)), 
+                'humidity': round(data.get('humidity', 0)), 
+                'icon': data.get('weatherCode')
+            }
+        except requests.exceptions.RequestException as e:
+            print(f"Request failed. Error: {e}")
+            return {}
+        
+class ForecastApi(Api):
+    def _fetch():
+        results = []
+        try:
+            request = requests.get(
+                'https://api.tomorrow.io/v4/weather/forecast',
+                params={
+                    "timesteps": '1d',
+                    "location": TOMORROWIO_ZIP_CODE,
+                    "units": "imperial",
+                    "apikey": TOMORROWIO_API_KEY
+                }
+            )
+            request.raise_for_status()
+            data = request.json()["timelines"]["daily"]
+            for d in data:
+                results.append({
+                    'day_name': datetime.strptime(d.get('time'), '%Y-%m-%dT%H:%M:%SZ').strftime('%a'),
+                    'low_temp': round(d['values'].get('temperatureMin', 0)),
+                    'high_temp': round(d['values'].get('temperatureMax', 0)),
+                    'humidity': round(d['values'].get('humidityAvg', 0)),
+                    'icon': d['values'].get('weatherCodeMax', 0),
+                })
+        except requests.exceptions.RequestException as e:
+            print(f"Request failed. Error: {e}")
+        return results
+        
+class StockApi(Api):
+    FETCH_INTEVAL = 0.25 # every 15 seconds
+    def _fetch():
+        index_list = {
+            '^GSPC': 'S&P',
+            '^DJI': 'Dow',
+            '^IXIC': 'Nasdaq',
+            '^FTSE': 'FTSE 100',
+            '^N225': 'Nikkei 225',
+            'CL=F': 'Crude Oil',
+            'BTC-USD': 'Bitcoin',
+            '^VIX': 'Vix',
+        }
+        results = []
+        try:
+            request = requests.get(f'https://finance.yahoo.com/world-indices/')
+            request.raise_for_status()
+            soup = BeautifulSoup(request.text, 'html.parser')
+            for idx in index_list:
+                price = soup.find(attrs={'data-symbol': idx, 'data-field': 'regularMarketPrice'})
+                change = soup.find(attrs={'data-symbol': idx, 'data-field': 'regularMarketChangePercent'})
+                if price and change:
+                    results.append({'name': index_list[idx], 'price': float(price['value']), 'change': round(float(change['value']), 2)})
+        except requests.exceptions.RequestException as e:
+            print(f"Request failed. Error: {e}")
+        return results
 
 def get_time():
     return datetime.now().strftime('%-I:%M:%S %p')
@@ -59,20 +110,11 @@ def get_time():
 def get_date():
     return datetime.now().strftime('%b %-d')
 
-def get_data():
-    # cache data so we're not hitting external apis every second
-    global last_external_check
-    global cached_data
-    drop_cache = False
-    if last_external_check + timedelta(minutes=EXTERNAL_CHECK_INTERVAL) < datetime.now():
-        last_external_check = datetime.now()
-        drop_cache = True
-        print('CACHE EXPIRED - DROPPING')
-
-    cached_data = {
+def get_all():
+    return {
         "local_time": get_time(),
         "local_date": get_date(),
-        "weather": get_weather() if drop_cache else cached_data['weather'],
-        "stocks": get_stocks() if drop_cache else cached_data['stocks']
+        "weather": WeatherApi.fetch(),
+        "forecast": ForecastApi.fetch(),
+        "stocks": StockApi.fetch()
     }
-    return cached_data
