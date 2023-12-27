@@ -95,13 +95,15 @@ class StockApi(Api):
             soup = BeautifulSoup(request.text, 'html.parser')
             for idx in index_list:
                 price = soup.find(attrs={'data-symbol': idx, 'data-field': 'regularMarketPrice'})
-                change = soup.find(attrs={'data-symbol': idx, 'data-field': 'regularMarketChangePercent'})
-                if price and change:
+                pts = soup.find(attrs={'data-symbol': idx, 'data-field': 'regularMarketChange'})
+                pct = soup.find(attrs={'data-symbol': idx, 'data-field': 'regularMarketChangePercent'})
+                if price and pts and pct:
                     results.append({
                         'name': index_list[idx], 
                         'price': '{0:.2f}'.format(float(price['value'])), 
-                        'change': '{0:+.2f}%'.format(float(change['value'])),
-                        'direction': 'up' if float(change['value']) > 0 else 'down'
+                        'points': '{0:+.2f}'.format(float(pts['value'])),
+                        'percent': '{0:+.2f}%'.format(float(pct['value'])),
+                        'direction': 'up' if float(pts['value']) > 0 else 'down'
                     })
         except requests.exceptions.RequestException as e:
             print(f"Request failed. Error: {e}")

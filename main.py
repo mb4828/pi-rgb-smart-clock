@@ -11,7 +11,7 @@ def main():
         if 'forecast' in api_data:
             print(api_data.get('forecast'))
         if 'stocks' in api_data:
-            print(' | '.join([f'{stock['name']}: {stock['price']} ({stock['change']})' for stock in api_data.get('stocks')]))
+            print(' | '.join([f'{stock['name']}: {stock['price']} {stock['points']} [{stock['percent']}]' for stock in api_data.get('stocks')]))
         print()
         time.sleep(1)
 
