@@ -86,8 +86,6 @@ class StockApi(Api):
             '^IXIC': 'Nasdaq',
             '^FTSE': 'FTSE 100',
             '^N225': 'Nikkei 225',
-            'CL=F': 'Crude Oil',
-            'BTC-USD': 'Bitcoin',
             '^VIX': 'Vix',
         }
         results = []
@@ -99,7 +97,12 @@ class StockApi(Api):
                 price = soup.find(attrs={'data-symbol': idx, 'data-field': 'regularMarketPrice'})
                 change = soup.find(attrs={'data-symbol': idx, 'data-field': 'regularMarketChangePercent'})
                 if price and change:
-                    results.append({'name': index_list[idx], 'price': float(price['value']), 'change': round(float(change['value']), 2)})
+                    results.append({
+                        'name': index_list[idx], 
+                        'price': '{0:.2f}'.format(float(price['value'])), 
+                        'change': '{0:+.2f}%'.format(float(change['value'])),
+                        'direction': 'up' if float(change['value']) > 0 else 'down'
+                    })
         except requests.exceptions.RequestException as e:
             print(f"Request failed. Error: {e}")
         return results
