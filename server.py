@@ -3,7 +3,6 @@ Mini Flask server for receiving inbound signals from Homebridge
 """
 
 from flask import Flask, jsonify
-from config import IS_CLOCK_ON
 
 server = Flask(__name__ + "-flask")
 
