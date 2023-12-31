@@ -1,13 +1,10 @@
+import multiprocessing
 import time
 from api import get_all
 from server import run_server
 
 
-def main():
-    # Start Flask
-    run_server()
-
-    # Start clock
+def run_clock():
     while True:
         api_data = get_all()
         print(f'{api_data.get("local_time")} | {api_data.get("local_date")}')
@@ -22,6 +19,19 @@ def main():
                      for stock in api_data.get("stocks")]))
         print()
         time.sleep(1)
+
+
+def main():
+    clock_proc = multiprocessing.Process(target=run_clock)
+    clock_proc.start()
+
+    try:
+        run_server()
+    except KeyboardInterrupt:
+        pass  # Ctrl+C to terminate Flask
+    finally:
+        clock_proc.terminate()
+        clock_proc.join()
 
 
 if __name__ == '__main__':
