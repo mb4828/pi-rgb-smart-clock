@@ -8,14 +8,15 @@ import requests
 
 from config import TOMORROWIO_API_KEY, TOMORROWIO_ZIP_CODE
 
+
 class Api:
     FETCH_INTEVAL = 10  # new data every 10 minutes
-    last_fetch = datetime(1990,1,1)
+    last_fetch = datetime(1990, 1, 1)
     cached_data = {}
 
     @staticmethod
     def _fetch():
-        pass # override this method
+        pass  # override this method
 
     @classmethod
     def fetch(cls):
@@ -27,7 +28,8 @@ class Api:
     @classmethod
     def is_cache_expired(cls):
         return cls.last_fetch + timedelta(minutes=cls.FETCH_INTEVAL) < datetime.now()
-    
+
+
 class WeatherApi(Api):
     def _fetch():
         try:
@@ -42,14 +44,15 @@ class WeatherApi(Api):
             request.raise_for_status()
             data = request.json()["data"]["values"]
             return {
-                'temp': round(data.get('temperature', 0)), 
-                'humidity': round(data.get('humidity', 0)), 
+                'temp': round(data.get('temperature', 0)),
+                'humidity': round(data.get('humidity', 0)),
                 'icon': data.get('weatherCode')
             }
         except requests.exceptions.RequestException as e:
             print(f"Request failed. Error: {e}")
             return {}
-        
+
+
 class ForecastApi(Api):
     def _fetch():
         results = []
@@ -76,9 +79,11 @@ class ForecastApi(Api):
         except requests.exceptions.RequestException as e:
             print(f"Request failed. Error: {e}")
         return results
-        
+
+
 class StockApi(Api):
-    FETCH_INTEVAL = 0.25 # every 15 seconds
+    FETCH_INTEVAL = 0.25  # every 15 seconds
+
     def _fetch():
         index_list = {
             '^GSPC': 'S&P',
@@ -99,8 +104,8 @@ class StockApi(Api):
                 pct = soup.find(attrs={'data-symbol': idx, 'data-field': 'regularMarketChangePercent'})
                 if price and pts and pct:
                     results.append({
-                        'name': index_list[idx], 
-                        'price': '{0:.2f}'.format(float(price['value'])), 
+                        'name': index_list[idx],
+                        'price': '{0:.2f}'.format(float(price['value'])),
                         'points': '{0:+.2f}'.format(float(pts['value'])),
                         'percent': '{0:+.2f}%'.format(float(pct['value'])),
                         'direction': 'up' if float(pts['value']) > 0 else 'down'
@@ -109,11 +114,14 @@ class StockApi(Api):
             print(f"Request failed. Error: {e}")
         return results
 
+
 def get_time():
     return datetime.now().strftime('%-I:%M:%S %p')
 
+
 def get_date():
     return datetime.now().strftime('%b %-d')
+
 
 def get_all():
     return {

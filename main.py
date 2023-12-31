@@ -1,8 +1,13 @@
 import time
 from api import get_all
+from server import run_server
 
 
 def main():
+    # Start Flask
+    run_server()
+
+    # Start clock
     while True:
         api_data = get_all()
         print(f'{api_data.get("local_time")} | {api_data.get("local_date")}')
@@ -11,9 +16,13 @@ def main():
         if 'forecast' in api_data:
             print(api_data.get("forecast"))
         if 'stocks' in api_data:
-            print(' | '.join([f'{stock["name"]}: {stock["price"]} {stock["points"]} [{stock["percent"]}]' for stock in api_data.get("stocks")]))
+            print(
+                ' | '.join(
+                    [f'{stock["name"]}: {stock["price"]} {stock["points"]} [{stock["percent"]}]'
+                     for stock in api_data.get("stocks")]))
         print()
         time.sleep(1)
+
 
 if __name__ == '__main__':
     main()
