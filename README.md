@@ -1,12 +1,13 @@
 PI RGB Smart Clock
 ==================
 
-Python project for driving a Raspberry Pi powered RGB matrix display, displaying clock and other data.
+Python project for driving a Raspberry Pi powered RGB matrix display, displaying clock, temperature, weather, and other data.
 
 Hardware used:
 - [Raspberry Pi 4 Model B (2GB)](https://www.adafruit.com/product/4292)
 - [RGB Matrix Bonnet](https://www.adafruit.com/product/3211) - [Programming Guide](https://learn.adafruit.com/adafruit-rgb-matrix-bonnet-for-raspberry-pi/overview)
 - [64x32 RGB Matrix Display](https://www.adafruit.com/product/2279)
+- [TEMPer2 USB Temperature Sensor](https://www.amazon.com/gp/product/B0B7SM95SX/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&psc=1)
 
 Inspired by: 
 - https://github.com/c0wsaysmoo/plane-tracker-rgb-pi
