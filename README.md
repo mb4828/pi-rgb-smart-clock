@@ -3,7 +3,8 @@ PI RGB Smart Clock
 
 Python project for driving a Raspberry Pi powered RGB matrix display acting as a smart clock, displaying time, temperature, weather, stock market, and other data.
 
-<div style="display:flex">
+<div style="display:flex; flex-direction:row">
+
 <div style="width:50%">
 
 ### Hardware used
@@ -21,6 +22,7 @@ Python project for driving a Raspberry Pi powered RGB matrix display acting as a
 - https://github.com/ColinWaddell/its-a-plane-python
 
 </div>
+
 </div>
 
 Copyright &copy; 2024 Matt Brauner
