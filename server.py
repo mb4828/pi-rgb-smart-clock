@@ -5,20 +5,23 @@ Flask server for receiving inbound signals from Homebridge using homebridge-http
 
 from flask import Flask, jsonify
 
+SCREEN_ON_URL = 'on'
+SCREEN_OFF_URL = 'off'
+
 
 server = Flask(__name__)
 message_queue = {}
 
 
-@server.route('/screen-on', methods=['GET'])
+@server.route(f'/{SCREEN_ON_URL}', methods=['GET'])
 def _screen_on():
-    message_queue.put('screen-on')
+    message_queue.put(SCREEN_ON_URL)
     return jsonify({"status": "success"})
 
 
-@server.route('/screen-off', methods=['GET'])
+@server.route(f'/{SCREEN_OFF_URL}', methods=['GET'])
 def _screen_off():
-    message_queue.put('screen-off')
+    message_queue.put(SCREEN_OFF_URL)
     return jsonify({"status": "success"})
 
 

@@ -1,0 +1,15 @@
+{
+    "platform": "HttpWebHooks",
+    "webhook_port": 51828,
+    "switches": [
+      {
+        "id": "pirgbclockswitch1",
+        "name": "Python RGB Smart Clock",
+        "on_url": "http://127.0.0.1:5500/on",
+        "on_method": "GET",
+        "off_url": "http://127.0.0.1:5500/off",
+        "off_method": "GET",
+        "service_type": "Switch"
+      }
+    ]
+  }

@@ -30,3 +30,13 @@ Copyright &copy; 2024 Matt Brauner
     TOMORROWIO_ZIP_CODE = 'yourZipCode US'
     ```
 4. Run [main.py](./main.py)
+
+## Homekit configuration
+
+If you want to utilize Apple Homekit to turn the clock on and off, use the following steps to install Homebridge and add the clock to Homekit:
+
+1. [Install Homebridge](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Raspbian) on the RPi
+2. Open the Homebridge UI at `http://<ip address of your server>:8581`
+3. On the _Plugins_ page, install the [homebridge-http-webhooks](https://github.com/benzman81/homebridge-http-webhooks``) plugin
+4. On the _Config_ page, copy/paste the contents of [http-webhooks-config.json](./http-webhooks-config.json) into the config, save, and restart Homebridge
+5. On the _Status_ page, use the QR code to add Homebridge to Homekit
