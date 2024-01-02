@@ -17,6 +17,8 @@ Copyright &copy; 2024 Matt Brauner
 
 ## Getting started
 
+### Installing the code
+
 1. Install [Python 3.11](https://www.python.org/downloads/) if not installed already. This project must be run with Python 3.11 or higher
 2. Setup virtual environment
     ```
@@ -31,12 +33,39 @@ Copyright &copy; 2024 Matt Brauner
     ```
 4. Run [main.py](./main.py)
 
-## Homekit configuration
+### Running on startup
 
-If you want to utilize Apple Homekit to turn the clock on and off, use the following steps to install Homebridge and add the clock to Homekit:
+If you want to run the clock automatically on start up, use the following steps:
+
+1. Open the `rc.local` file
+    ```
+    sudo nano /etc/rc.local
+    ```
+2. Add the following line before the `exit 0` line
+    ```
+    python3 /path/to/main.py &
+    ```
+3. Save the file and exit
+4. Make `rc.local` executable
+    ```
+    sudo chmod +x /etc/rc.local
+    ```
+5. Reboot the RPi to ensure main.py runs on startup
+    ```
+    sudo reboot
+    ps -elf | grep pi-rgb-smart-clock
+    ```
+6. If you want to kill the process
+    ```
+    sudo kill <pid>
+    ```
+
+### Pairing with Apple Homekit
+
+If you want to use Apple Homekit to turn the clock on and off, use the following steps to install Homebridge and add the clock to Homekit:
 
 1. [Install Homebridge](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Raspbian) on the RPi
-2. Open the Homebridge UI at `http://<ip address of your server>:8581`
+2. Open the Homebridge UI at `http://<ip address of your RPi>:8581`
 3. On the _Plugins_ page, install the [homebridge-http-webhooks](https://github.com/benzman81/homebridge-http-webhooks``) plugin
 4. On the _Config_ page, copy/paste the contents of [http-webhooks-config.json](./http-webhooks-config.json) into the config, save, and restart Homebridge
 5. On the _Status_ page, use the QR code to add Homebridge to Homekit

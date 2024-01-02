@@ -1,6 +1,6 @@
 """
-Flask server for receiving inbound signals from Homebridge using homebridge-http-webhooks
-@see https://github.com/benzman81/homebridge-http-webhooks
+Flask server for receiving inbound signals from Homebridge using homebridge-http-webhooks. 
+Only needed if you're going to be using Homekit
 """
 
 from flask import Flask, jsonify
