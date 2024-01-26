@@ -4,7 +4,7 @@ Fetches data from various APIs
 
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
-from temper import USBRead, USBList
+from vendor.temper import USBRead, USBList
 import requests
 
 from config import TOMORROWIO_API_KEY, TOMORROWIO_ZIP_CODE
@@ -120,17 +120,17 @@ class TemperApi(Api):
     FETCH_INTEVAL = 0.1  # every 10 seconds
 
     def _fetch():
-        #try:
-       
+        # try:
+
         device_list = USBList().get_usb_devices()
         device = device_list.get(next(k for k, v in device_list.items() if v.get('product') == 'TEMPer2'))
-        
+
         usbread = USBRead(device.get('devices')[-1]).read()
 
         print(device)
         print(usbread)
-       
-       #except Exception as e:
+
+       # except Exception as e:
         #    print(f'Failed to fetch Temper data. Error: {e}')
         #    return {}
 
