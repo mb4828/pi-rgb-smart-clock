@@ -3,6 +3,7 @@ Fetches data from various APIs
 """
 
 from datetime import datetime, timedelta
+import logging
 from bs4 import BeautifulSoup
 from vendor.temper import USBRead, USBList
 import requests
@@ -50,7 +51,7 @@ class WeatherApi(Api):
                 'icon': data.get('weatherCode')
             }
         except requests.exceptions.RequestException as e:
-            print(f"Request failed. Error: {e}")
+            logging.error(f"Request failed. Error: {e}")
             return {}
 
 
@@ -78,7 +79,7 @@ class ForecastApi(Api):
                     'icon': d['values'].get('weatherCodeMax', 0),
                 })
         except requests.exceptions.RequestException as e:
-            print(f"Request failed. Error: {e}")
+            logging.error(f"Request failed. Error: {e}")
         return results
 
 
@@ -112,7 +113,7 @@ class StockApi(Api):
                         'direction': 'up' if float(pts['value']) > 0 else 'down'
                     })
         except requests.exceptions.RequestException as e:
-            print(f"Request failed. Error: {e}")
+            logging.error(f"Request failed. Error: {e}")
         return results
 
 
@@ -128,7 +129,7 @@ class TemperApi(Api):
             return {'temp': (usbread['external temperature'] * 9/5) + 32}
 
         except Exception as e:
-            print(f'Failed to fetch Temper data. Error: {e}')
+            logging.error(f'Failed to fetch Temper data. Error: {e}')
             return {'temp': -1}
 
 
