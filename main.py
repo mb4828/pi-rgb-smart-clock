@@ -29,7 +29,7 @@ def run_clock(message_queue):
                     [f'{stock["name"]}: {stock["price"]} {stock["points"]} [{stock["percent"]}]'
                      for stock in api_data.get("stocks")]))
         if 'temper' in api_data:
-            print(api_data.get("temper"))
+            print(f'{api_data.get("temper").get("temp")}°')
         print()
 
         time.sleep(1)

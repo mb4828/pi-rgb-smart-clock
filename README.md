@@ -27,6 +27,10 @@ Copyright &copy; 2024 Matt Brauner
     ```
 3. Create [config.py](./config.py) file with the following content
     ```
+    # Location of your Homebridge Webhooks server
+    HOMEBRIDGE_IP = '0.0.0.0'
+    HOMEBRIDGE_PORT = '51828'
+
     # https://www.tomorrow.io
     TOMORROWIO_API_KEY = 'yourTomorrowIOApiKey' 
     TOMORROWIO_ZIP_CODE = 'yourZipCode US'

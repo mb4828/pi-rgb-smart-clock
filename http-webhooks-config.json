@@ -11,5 +11,12 @@
         "off_method": "GET",
         "service_type": "Switch"
       }
+    ],
+    "sensors": [
+      {
+        "id": "temper2sensor",
+        "name": "TEMPer2",
+        "type": "temperature"
+      }
     ]
-  }
+}
