@@ -65,5 +65,6 @@ python main.py
 If deploying:
 
 ```
-./docker-run.sh
+./docker-run.sh     # starts the docker container
+./docker-stop.sh    # stops the docker container
 ```
