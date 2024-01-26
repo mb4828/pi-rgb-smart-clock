@@ -33,7 +33,7 @@ def _screen_off():
 @server.route('/ping', methods=['GET'])
 def _ping():
     """ Return true to indicate server is running """
-    return True
+    return "True"
 
 
 def run_server(msg_queue):
