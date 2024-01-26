@@ -120,12 +120,19 @@ class TemperApi(Api):
     FETCH_INTEVAL = 0.1  # every 10 seconds
 
     def _fetch():
-        try:
-            device_list = USBList().get_usb_devices()
-            print(device_list)
-        except Exception as e:
-            print(f'Failed to fetch Temper data. Error: {e}')
-            return {}
+        #try:
+       
+        device_list = USBList().get_usb_devices()
+        device = device_list.get(next(k for k, v in device_list.items() if v.get('product') == 'TEMPer2'))
+        
+        usbread = USBRead(device.get('devices')[-1]).read()
+
+        print(device)
+        print(usbread)
+       
+       #except Exception as e:
+        #    print(f'Failed to fetch Temper data. Error: {e}')
+        #    return {}
 
 
 def get_time():
