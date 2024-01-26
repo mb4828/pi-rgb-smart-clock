@@ -44,8 +44,8 @@ If you want to use Apple Homekit to turn the clock on and off, use the following
 
 1. [Install Homebridge](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Raspbian) on the RPi
 2. Open the Homebridge UI at `http://<ip address of your RPi>:8581`
-3. On the _Plugins_ page, install the [homebridge-http-webhooks](https://github.com/benzman81/homebridge-http-webhooks``) plugin
-4. On the _Config_ page, copy/paste the contents of [http-webhooks-config.json](./http-webhooks-config.json) into the config, save, and restart Homebridge
+3. On the _Plugins_ page, install the [homebridge-http-webhooks](https://github.com/benzman81/homebridge-http-webhooks) plugin
+4. On the _Homebridge Webhooks Config_ page, copy/paste the contents of [http-webhooks-config.json](./http-webhooks-config.json) into the config, save, and restart Homebridge
 5. On the _Status_ page, use the QR code to add Homebridge to Homekit
 
 ### Building the code
