@@ -30,6 +30,12 @@ def _screen_off():
     return jsonify({"status": "success"})
 
 
+@server.route('/ping', methods=['GET'])
+def _ping():
+    """ Return true to indicate server is running """
+    return True
+
+
 def run_server(msg_queue):
     global message_queue
     message_queue = msg_queue
