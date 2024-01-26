@@ -28,6 +28,8 @@ def run_clock(message_queue):
                 ' | '.join(
                     [f'{stock["name"]}: {stock["price"]} {stock["points"]} [{stock["percent"]}]'
                      for stock in api_data.get("stocks")]))
+        if 'temper' in api_data:
+            print(api_data.get("temper"))
         print()
 
         time.sleep(1)

@@ -4,6 +4,7 @@ Fetches data from various APIs
 
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
+from temper import USBRead, USBList
 import requests
 
 from config import TOMORROWIO_API_KEY, TOMORROWIO_ZIP_CODE
@@ -115,6 +116,18 @@ class StockApi(Api):
         return results
 
 
+class TemperApi(Api):
+    FETCH_INTEVAL = 0.1  # every 10 seconds
+
+    def _fetch():
+        try:
+            device_list = USBList().get_usb_devices()
+            print(device_list)
+        except Exception as e:
+            print(f'Failed to fetch Temper data. Error: {e}')
+            return {}
+
+
 def get_time():
     return datetime.now().strftime('%-I:%M:%S %p')
 
@@ -129,5 +142,6 @@ def get_all():
         "local_date": get_date(),
         "weather": WeatherApi.fetch(),
         "forecast": ForecastApi.fetch(),
-        "stocks": StockApi.fetch()
+        "stocks": StockApi.fetch(),
+        "temper": TemperApi.fetch()
     }
