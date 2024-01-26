@@ -126,9 +126,7 @@ class TemperApi(Api):
         device = device_list.get(next(k for k, v in device_list.items() if v.get('product') == 'TEMPer2'))
 
         usbread = USBRead(device.get('devices')[-1]).read()
-
-        print(device)
-        print(usbread)
+        return {'temp': (usbread['external temperature'] * 9/5) + 32}
 
        # except Exception as e:
         #    print(f'Failed to fetch Temper data. Error: {e}')
