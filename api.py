@@ -13,7 +13,7 @@ from config import TOMORROWIO_API_KEY, TOMORROWIO_ZIP_CODE
 
 class Api:
     FETCH_INTEVAL = 10  # new data every 10 minutes
-    last_fetch = datetime(1990, 1, 1)
+    next_fetch = datetime(1990, 1, 1)
     cached_data = {}
 
     @staticmethod
@@ -24,12 +24,12 @@ class Api:
     def fetch(cls):
         if cls.is_cache_expired():
             cls.cached_data = cls._fetch()
-            cls.last_fetch = datetime.now()
+            cls.next_fetch = datetime.now() + timedelta(minutes=cls.FETCH_INTEVAL)
         return cls.cached_data
 
     @classmethod
     def is_cache_expired(cls):
-        return cls.last_fetch + timedelta(minutes=cls.FETCH_INTEVAL) < datetime.now()
+        return cls.next_fetch <= datetime.now()
 
 
 class WeatherApi(Api):
@@ -147,6 +147,6 @@ def get_all():
         "local_date": get_date(),
         "weather": WeatherApi.fetch(),
         "forecast": ForecastApi.fetch(),
-        "stocks": StockApi.fetch(),
+        # "stocks": StockApi.fetch(),
         "temper": TemperApi.fetch()
     }
