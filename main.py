@@ -7,6 +7,7 @@ import requests
 
 from pirgbsmartclock.api import TemperApi, get_all
 from config import HOMEBRIDGE_IP, HOMEBRIDGE_PORT
+from pirgbsmartclock.clock import draw_clock
 from server import run_server
 
 logging.basicConfig(encoding='utf-8', level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -21,12 +22,7 @@ def run_clock(message_queue):
         except queue.Empty:
             pass  # no new messages - continue
 
-        # get data from apis
-        api_data = get_all()
-
-        # update clock display
-        logging.info(api_data)
-
+        draw_clock()
         time.sleep(1)
 
 
