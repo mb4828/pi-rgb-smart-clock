@@ -5,7 +5,7 @@ import time
 
 import requests
 
-from api import TemperApi, get_all
+from pirgbsmartclock.api import TemperApi, get_all
 from config import HOMEBRIDGE_IP, HOMEBRIDGE_PORT
 from server import run_server
 
@@ -17,7 +17,7 @@ def run_clock(message_queue):
         # check for messages
         try:
             message = message_queue.get_nowait()
-            logging.debug('GOT MESSAGE: ' + message)
+            logging.info('GOT MESSAGE: ' + message)
         except queue.Empty:
             pass  # no new messages - continue
 
@@ -25,19 +25,7 @@ def run_clock(message_queue):
         api_data = get_all()
 
         # update clock display
-        logging.debug(f'{api_data.get("local_time")} | {api_data.get("local_date")}')
-        if 'weather' in api_data:
-            logging.debug(f'{api_data.get("weather").get("temp")}° | {api_data.get("weather").get("humidity")}%')
-        if 'forecast' in api_data:
-            logging.debug(api_data.get("forecast"))
-        if 'stocks' in api_data:
-            logging.debug(
-                ' | '.join(
-                    [f'{stock["name"]}: {stock["price"]} {stock["points"]} [{stock["percent"]}]'
-                     for stock in api_data.get("stocks")]))
-        if 'temper' in api_data:
-            logging.debug(f'{api_data.get("temper").get("temp")}°')
-        logging.debug('')
+        logging.info(api_data)
 
         time.sleep(1)
 
@@ -45,10 +33,13 @@ def run_clock(message_queue):
 def run_temper():
     """ Sends Homebridge the temperature reading from Temper2 """
     while True:
-        temp = TemperApi.fetch().get('temp')
-        req = requests.get(f'http://{HOMEBRIDGE_IP}:{HOMEBRIDGE_PORT}/?accessoryId=temper2sensor&value={temp}')
-        logging.info(f'Sent temperature to Homebridge and received code {req.status_code}')
-        time.sleep(60)
+        try:
+            temp = TemperApi.fetch().get('temp')
+            req = requests.get(f'http://{HOMEBRIDGE_IP}:{HOMEBRIDGE_PORT}/?accessoryId=temper2sensor&value={temp}')
+            logging.info(f'Sent temperature to Homebridge and received code {req.status_code}')
+            time.sleep(60)
+        except Exception as e:
+            logging.warning('Failed to transmit Temper data to Homebridge: ' + e)
 
 
 def main():

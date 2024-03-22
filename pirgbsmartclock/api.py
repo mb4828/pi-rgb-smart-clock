@@ -5,7 +5,7 @@ Fetches data from various APIs
 from datetime import datetime, timedelta
 import logging
 from bs4 import BeautifulSoup
-from vendor.temper import USBRead, USBList
+from pirgbsmartclock.vendor.temper import USBRead, USBList
 import requests
 
 from config import TOMORROWIO_API_KEY, TOMORROWIO_ZIP_CODE
