@@ -25,9 +25,9 @@ Copyright &copy; 2024 Matt Brauner
     curl https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/main/rgb-matrix.sh >rgb-matrix.sh
     sudo bash rgb-matrix.sh
     ```
-1. Add rgbmatrix to PYTHONPATH in your .bashrc (or RC file for your terminal). Then run source .bashrc
+1. Copy Henner Zeller's entire rpi-rgb-led-matrix project into this directory
     ```
-    export PYTHONPATH="$PYTHONPATH:/path/to/rgbmatrix"
+    cp -r /path/to/rpi-rgb-led-matrix .
     ```
 1. Setup virtual environment
     ```
