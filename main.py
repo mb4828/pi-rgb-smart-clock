@@ -5,7 +5,7 @@ import time
 
 import requests
 
-from pirgbsmartclock.api import TemperApi, get_all
+from pirgbsmartclock.api import TemperApi
 from config import HOMEBRIDGE_IP, HOMEBRIDGE_PORT
 from pirgbsmartclock.clock import draw_clock
 from server import run_server

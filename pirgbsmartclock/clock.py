@@ -1,8 +1,8 @@
 from datetime import datetime
 from colour import Color
 from .api import get_all
-from .vendor.rgbmatrix import graphics
 from .vendor import fonts
+from rgbmatrix import graphics
 
 CLOCK_FONT = fonts.regular
 CLOCK_COLOR = graphics.Color(Color('green').get_rgb())

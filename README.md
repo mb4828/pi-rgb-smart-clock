@@ -24,6 +24,7 @@ Copyright &copy; 2024 Matt Brauner
     ```
     python3 -m venv venv
     pip3 install -r requirements.txt
+    git submodule update --init --recursive
     ```
 3. Create [config.py](./config.py) file with the following content
     ```
