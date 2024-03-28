@@ -129,3 +129,4 @@ cython_debug/
 # Misc
 config.py
 .DS_Store
+rpi-rgb-led-matrix/
