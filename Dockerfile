@@ -10,9 +10,6 @@ COPY . /app
 # Install dependencies
 RUN pip install -r requirements.txt
 
-# Initialize and update submodules
-RUN git submodule update --init --recursive
-
 # Expose port 5500 for the server
 EXPOSE 5500
 

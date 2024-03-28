@@ -20,13 +20,21 @@ Copyright &copy; 2024 Matt Brauner
 ### Installing the code
 
 1. Install [Python 3.11](https://www.python.org/downloads/) if not installed already. This project must be run with Python 3.11 or higher
-2. Setup virtual environment
+1. Install Henner Zeller rgbmatrix library
+    ```
+    curl https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/main/rgb-matrix.sh >rgb-matrix.sh
+    sudo bash rgb-matrix.sh
+    ```
+1. Add rgbmatrix to PYTHONPATH in your .bashrc (or RC file for your terminal). Then run source .bashrc
+    ```
+    export PYTHONPATH="$PYTHONPATH:/path/to/rgbmatrix"
+    ```
+1. Setup virtual environment
     ```
     python3 -m venv venv
     pip3 install -r requirements.txt
-    git submodule update --init --recursive
     ```
-3. Create [config.py](./config.py) file with the following content
+1. Create [config.py](./config.py) file with the following content
     ```
     # Location of your Homebridge Webhooks server
     HOMEBRIDGE_IP = '0.0.0.0'
@@ -36,7 +44,7 @@ Copyright &copy; 2024 Matt Brauner
     TOMORROWIO_API_KEY = 'yourTomorrowIOApiKey' 
     TOMORROWIO_ZIP_CODE = 'yourZipCode US'
     ```
-4. Run [main.py](./main.py)
+1. Run [main.py](./main.py)
 
 
 ### Pairing with Apple Homekit
