@@ -1,3 +1,4 @@
+import os
 import logging
 import multiprocessing
 import queue
@@ -6,12 +7,13 @@ import time
 import requests
 
 from pirgbsmartclock.api import TemperApi
-from config import HOMEBRIDGE_IP, HOMEBRIDGE_PORT
+from config import HOMEBRIDGE_IP, HOMEBRIDGE_PORT, TIMEZONE
 from pirgbsmartclock.graphics import GraphicsTest
 from server import run_server
 
 logging.basicConfig(encoding='utf-8', level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-
+os.environ['TZ'] = TIMEZONE
+time.tzset()
 
 def run_clock(message_queue):
     gt = GraphicsTest()

@@ -43,6 +43,8 @@ Copyright &copy; 2024 Matt Brauner
     # https://www.tomorrow.io
     TOMORROWIO_API_KEY = 'yourTomorrowIOApiKey' 
     TOMORROWIO_ZIP_CODE = 'yourZipCode US'
+
+    TIMEZONE = 'Your timezone'
     ```
 1. Run [main.py](./main.py)
 
