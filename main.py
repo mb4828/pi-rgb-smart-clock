@@ -7,22 +7,27 @@ import requests
 
 from pirgbsmartclock.api import TemperApi
 from config import HOMEBRIDGE_IP, HOMEBRIDGE_PORT
-from pirgbsmartclock.clock import draw_clock
+from pirgbsmartclock.graphics import GraphicsTest
 from server import run_server
 
 logging.basicConfig(encoding='utf-8', level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
 
 def run_clock(message_queue):
+    gt = GraphicsTest()
+    gt.process()
+    show_clock = True
+
     while True:
         # check for messages
         try:
             message = message_queue.get_nowait()
             logging.info('GOT MESSAGE: ' + message)
+            show_clock = 'off' not in message
         except queue.Empty:
             pass  # no new messages - continue
 
-        draw_clock()
+        gt.run(show_clock)
         time.sleep(1)
 
 
