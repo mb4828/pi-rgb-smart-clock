@@ -14,5 +14,5 @@ RUN pip install -r requirements.txt
 EXPOSE 5500
 
 # Run main.py when the container launches
-CMD ["python", "./main.py"]
+CMD ["sudo", "python", "./main.py"]
 
