@@ -8,7 +8,7 @@ import requests
 
 from pirgbsmartclock.api import TemperApi
 from config import HOMEBRIDGE_IP, HOMEBRIDGE_PORT, TIMEZONE
-from pirgbsmartclock.graphics import GraphicsTest
+from pirgbsmartclock.clock import Clock
 from server import run_server
 
 logging.basicConfig(encoding='utf-8', level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -16,8 +16,7 @@ os.environ['TZ'] = TIMEZONE
 time.tzset()
 
 def run_clock(message_queue):
-    gt = GraphicsTest()
-    gt.process()
+    clock = Clock()
     show_clock = True
 
     while True:
@@ -29,7 +28,7 @@ def run_clock(message_queue):
         except queue.Empty:
             pass  # no new messages - continue
 
-        gt.run(show_clock)
+        clock.run(show_clock)
         time.sleep(0.5)
 
 
