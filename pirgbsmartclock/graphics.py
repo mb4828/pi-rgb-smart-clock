@@ -42,8 +42,8 @@ class GraphicsTest(GraphicsBase):
         current_time = now.strftime("%l:%M") if self._show_sec else now.strftime("%l %M")
         current_date = now.strftime('%-m/%-d')
         current_day = now.strftime('%a')
-        outdoor_temp = f"O-{round(WeatherApi().fetch().get('temp',0))}°"
-        indoor_temp = f"I-{round(TemperApi().fetch()['temp'] * 1.8 + 32)}°"
+        outdoor_temp = f"O-{round(WeatherApi.fetch().get('temp',0))}°"
+        indoor_temp = f"I-{round(TemperApi.fetch().get('temp') * 1.8 + 32)}°"
 
         # draw clock
         if self._prev_time is not None:

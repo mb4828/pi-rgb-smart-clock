@@ -7,6 +7,9 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
+# Setup plugdev user group so Docker can access Temper
+RUN usermod -aG plugdev root
+
 # Install dependencies
 RUN pip install -r requirements.txt
 
