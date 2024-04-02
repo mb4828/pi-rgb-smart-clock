@@ -11,7 +11,7 @@ class Clock(GraphicsBase):
     COLOR1 = graphics.Color(*RGB['blue'])
     COLOR2 = graphics.Color(*RGB['lightseagreen'])
 
-    CLOCK_POS = (28, 13)
+    CLOCK_POS = (27, 13)
     _prev_time = None
     _show_sec = True
 
