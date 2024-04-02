@@ -30,7 +30,7 @@ def run_clock(message_queue):
             pass  # no new messages - continue
 
         gt.run(show_clock)
-        time.sleep(1)
+        time.sleep(0.5)
 
 
 def run_temper():
