@@ -14,16 +14,17 @@ class Clock(GraphicsBase):
     GREEN = graphics.Color(*RGB['lightseagreen'])
     BLUE = graphics.Color(*RGB['blue'])
 
-    CLOCK_POS = (27, 13)
-    DAY_POS = (3, 8)
-    MONTH_POS = (3, 15)
-    DATE_POS = (16, 15)
-    INDOOR_ICON_POS = (2, 19)
-    INDOOR_POS = (11, 26)
-    OUTDOOR_ICON_POS = (34, 19)
-    OUTDOOR_POS = (44, 26)
-    HIGH_POS = (44, 32)
-    LOW_POS = (54, 32)
+    CLOCK_POS = (28, 12)
+    DAY_POS = (2, 7)
+    MONTH_POS = (2, 15)
+    DATE_POS = (15, 15)
+    INDOOR_ICON_POS = (1, 19)
+    INDOOR_POS = (10, 26)
+    OUTDOOR_ICON_POS = (32, 19)
+    OUTDOOR_POS = (42, 26)
+    HIGH_POS = (42, 32)
+    LOW_POS = (52, 32)
+    RAIN_LIKELY_POS = (32, 27)
     
     _show_sec = True
 
@@ -36,6 +37,7 @@ class Clock(GraphicsBase):
         self.font_sm = self.load_font(self.VENDOR_DIR + 'fonts/4x6.bdf')
 
         self.home = self.load_icon(self.VENDOR_DIR + 'icons/home.png')
+        self.umbrella = self.load_icon(self.VENDOR_DIR + 'icons/umbrella_small.png')
         self.w1000 = self.load_icon(self.VENDOR_DIR + 'icons/1000.png', RGB['gold'])
         self.w1001 = self.load_icon(self.VENDOR_DIR + 'icons/1001.png', RGB['gray'])
         self.w1100 = self.load_icon(self.VENDOR_DIR + 'icons/1100.png', RGB['gold'], RGB['gray'])
@@ -105,6 +107,7 @@ class Clock(GraphicsBase):
         forecast = ForecastApi.fetch()[0] if len(ForecastApi.fetch()) > 0 else {}
         high_temp = str(forecast.get('high_temp', 0))
         low_temp = str(forecast.get('low_temp', 0))
+        rain_likely = forecast.get('rain_likely')
 
         canvas = self.matrix
         canvas.Clear()
@@ -136,6 +139,8 @@ class Clock(GraphicsBase):
             # draw icons
             canvas.SetImage(self.home, self.INDOOR_ICON_POS[0], self.INDOOR_ICON_POS[1])
             canvas.SetImage(self.get_weather_icon(outdoor_code), self.OUTDOOR_ICON_POS[0], self.OUTDOOR_ICON_POS[1])
+            if rain_likely:
+                canvas.SetImage(self.umbrella, self.RAIN_LIKELY_POS[0], self.RAIN_LIKELY_POS[1])
 
 # Main function
 if __name__ == "__main__":

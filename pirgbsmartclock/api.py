@@ -76,6 +76,7 @@ class ForecastApi(Api):
                     'low_temp': round(d['values'].get('temperatureMin', 0)),
                     'high_temp': round(d['values'].get('temperatureMax', 0)),
                     'humidity': round(d['values'].get('humidityAvg', 0)),
+                    'rain_likely': d['values'].get('precipitationProbabilityMax', 0) > 25,
                     'icon': d['values'].get('weatherCodeMax', 0),
                 })
         except requests.exceptions.RequestException as e:
