@@ -16,12 +16,12 @@ class Clock(GraphicsBase):
 
     CLOCK_POS = (27, 13)
     DAY_POS = (3, 8)
-    MONTH_POS = (3, 16)
-    DATE_POS = (16, 16)
-    INDOOR_ICON_POS = (2, 20)
-    INDOOR_POS = (11, 27)
-    OUTDOOR_ICON_POS = (34, 20)
-    OUTDOOR_POS = (44, 27)
+    MONTH_POS = (3, 15)
+    DATE_POS = (16, 15)
+    INDOOR_ICON_POS = (2, 19)
+    INDOOR_POS = (11, 26)
+    OUTDOOR_ICON_POS = (34, 19)
+    OUTDOOR_POS = (44, 26)
     HIGH_POS = (44, 32)
     LOW_POS = (54, 32)
     
