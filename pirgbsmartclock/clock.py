@@ -4,21 +4,26 @@ from colour import COLOR_NAME_TO_RGB as RGB
 from rgbmatrix import graphics
 from PIL import Image
 from .graphics_base import GraphicsBase
-from .api import WeatherApi, TemperApi
+from .api import ForecastApi, WeatherApi, TemperApi
 
 
 class Clock(GraphicsBase):
     VENDOR_DIR = './pirgbsmartclock/vendor/'
     BLACK = graphics.Color(*RGB['black'])
-    COLOR1 = graphics.Color(*RGB['blue'])
-    COLOR2 = graphics.Color(*RGB['lightseagreen'])
+    RED = graphics.Color(*RGB['red'])
+    GREEN = graphics.Color(*RGB['lightseagreen'])
+    BLUE = graphics.Color(*RGB['blue'])
 
     CLOCK_POS = (27, 13)
+    DAY_POS = (3, 8)
     MONTH_POS = (3, 16)
     DATE_POS = (16, 16)
-    DAY_POS = (3, 8)
+    INDOOR_ICON_POS = (2, 22)
     INDOOR_POS = (11, 29)
+    OUTDOOR_ICON_POS = (34, 22)
     OUTDOOR_POS = (44, 29)
+    HIGH_POS = (44, 21)
+    LOW_POS = (54, 21)
     
     _show_sec = True
 
@@ -26,9 +31,9 @@ class Clock(GraphicsBase):
         super(Clock, self).__init__(*args, **kwargs)
         self.process()
 
-        self.font1 = self.load_font(self.VENDOR_DIR + 'fonts/7x14B.bdf')
-        self.font2 = self.load_font(self.VENDOR_DIR + 'fonts/4x6.bdf')
-        self.font3 = self.load_font(self.VENDOR_DIR + 'fonts/6x10.bdf')
+        self.font_lg = self.load_font(self.VENDOR_DIR + 'fonts/7x14B.bdf')
+        self.font_md = self.load_font(self.VENDOR_DIR + 'fonts/6x10.bdf')
+        self.font_sm = self.load_font(self.VENDOR_DIR + 'fonts/4x6.bdf')
 
         self.home = self.load_icon(self.VENDOR_DIR + 'icons/home.png')
         self.w1000 = self.load_icon(self.VENDOR_DIR + 'icons/1000.png')
@@ -89,36 +94,42 @@ class Clock(GraphicsBase):
         current_month = now.strftime('%b')
         current_date = now.strftime('%-d')
         current_day = now.strftime('%a')
-        outdoor_temp = f"{round(WeatherApi.fetch().get('temp',0))}°"
-        outdoor_code = WeatherApi.fetch().get('icon')
         indoor_temp = f"{round(TemperApi.fetch().get('temp') * 1.8 + 32)}°"
+        outdoor_temp = f"{WeatherApi.fetch().get('temp',0)}°"
+        outdoor_code = WeatherApi.fetch().get('icon')
+        high_temp = str(ForecastApi.fetch()[0].get('high_temp', 0))
+        low_temp = str(ForecastApi.fetch()[0].get('low_temp', 0))
 
         canvas = self.matrix
         canvas.Clear()
 
         if show_clock:
             # draw clock
-            graphics.DrawText(canvas, self.font1, self.CLOCK_POS[0], self.CLOCK_POS[1], self.COLOR1, current_time)
+            graphics.DrawText(canvas, self.font_lg, self.CLOCK_POS[0], self.CLOCK_POS[1], self.BLUE, current_time)
             self._show_sec = not self._show_sec
+            
+            # draw date
+            graphics.DrawText(canvas, self.font_sm, self.DATE_POS[0], self.DATE_POS[1], self.GREEN, current_date)
 
             # draw month
-            graphics.DrawText(canvas, self.font2, self.MONTH_POS[0], self.MONTH_POS[1], self.COLOR2, current_month)
-
-            # draw date
-            graphics.DrawText(canvas, self.font2, self.DATE_POS[0], self.DATE_POS[1], self.COLOR2, current_date)
+            graphics.DrawText(canvas, self.font_sm, self.MONTH_POS[0], self.MONTH_POS[1], self.GREEN, current_month)
 
             # draw day
-            graphics.DrawText(canvas, self.font2, self.DAY_POS[0], self.DAY_POS[1], self.COLOR2, current_day)
+            graphics.DrawText(canvas, self.font_sm, self.DAY_POS[0], self.DAY_POS[1], self.GREEN, current_day)
+            
+            # draw indoor temp
+            graphics.DrawText(canvas, self.font_md, self.INDOOR_POS[0], self.INDOOR_POS[1], self.GREEN, indoor_temp)
 
-            # draw outdoor conditions
-            graphics.DrawText(canvas, self.font3, self.OUTDOOR_POS[0], self.OUTDOOR_POS[1], self.COLOR2, outdoor_temp)
+            # draw outdoor temp
+            graphics.DrawText(canvas, self.font_md, self.OUTDOOR_POS[0], self.OUTDOOR_POS[1], self.GREEN, outdoor_temp)
 
-            # draw indoor conditions
-            graphics.DrawText(canvas, self.font3, self.INDOOR_POS[0], self.INDOOR_POS[1], self.COLOR2, indoor_temp)
+            # draw high and low temp
+            graphics.DrawText(canvas, self.font_sm, self.HIGH_POS[0], self.HIGH_POS[1], self.RED, high_temp)
+            graphics.DrawText(canvas, self.font_sm, self.LOW_POS[0], self.LOW_POS[1], self.BLUE, low_temp)
 
             # draw icons
-            canvas.SetImage(self.home, 2, 22)
-            canvas.SetImage(self.get_weather_icon(outdoor_code), 34, 22)
+            canvas.SetImage(self.home, self.INDOOR_ICON_POS[0], self.INDOOR_ICON_POS[1])
+            canvas.SetImage(self.get_weather_icon(outdoor_code), self.OUTDOOR_ICON_POS[0], self.OUTDOOR_ICON_POS[1])
 
 # Main function
 if __name__ == "__main__":
