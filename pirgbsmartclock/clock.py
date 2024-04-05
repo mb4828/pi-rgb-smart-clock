@@ -26,25 +26,28 @@ class Clock(GraphicsBase):
         super(Clock, self).__init__(*args, **kwargs)
         self.process()
 
-        self.font1 = graphics.Font()
-        self.font1.LoadFont(self.VENDOR_DIR + 'fonts/7x14B.bdf')
-        self.font2 = graphics.Font()
-        self.font2.LoadFont(self.VENDOR_DIR + 'fonts/4x6.bdf')
-        self.font3 = graphics.Font()
-        self.font3.LoadFont(self.VENDOR_DIR + 'fonts/6x10.bdf')
+        self.font1 = self.load_font(self.VENDOR_DIR + 'fonts/7x14B.bdf')
+        self.font2 = self.load_font(self.VENDOR_DIR + 'fonts/4x6.bdf')
+        self.font3 = self.load_font(self.VENDOR_DIR + 'fonts/6x10.bdf')
 
-        self.home = self.recolor_icon(Image.open(self.VENDOR_DIR + 'icons/home.png'))
-        self.w1000 = self.recolor_icon(Image.open(self.VENDOR_DIR + 'icons/1000.png'))
-        self.w1001 = self.recolor_icon(Image.open(self.VENDOR_DIR + 'icons/1001.png'))
-        self.w1100 = self.recolor_icon(Image.open(self.VENDOR_DIR + 'icons/1100.png'))
-        self.w2000 = self.recolor_icon(Image.open(self.VENDOR_DIR + 'icons/2000.png'))
-        self.w4000 = self.recolor_icon(Image.open(self.VENDOR_DIR + 'icons/4000.png'))
-        self.w5000 = self.recolor_icon(Image.open(self.VENDOR_DIR + 'icons/5000.png'))
-        self.w6000 = self.recolor_icon(Image.open(self.VENDOR_DIR + 'icons/6000.png'))
-        self.w7000 = self.recolor_icon(Image.open(self.VENDOR_DIR + 'icons/7000.png'))
-        self.w8000 = self.recolor_icon(Image.open(self.VENDOR_DIR + 'icons/8000.png'))
+        self.home = self.load_icon(self.VENDOR_DIR + 'icons/home.png')
+        self.w1000 = self.load_icon(self.VENDOR_DIR + 'icons/1000.png')
+        self.w1001 = self.load_icon(self.VENDOR_DIR + 'icons/1001.png')
+        self.w1100 = self.load_icon(self.VENDOR_DIR + 'icons/1100.png')
+        self.w2000 = self.load_icon(self.VENDOR_DIR + 'icons/2000.png')
+        self.w4000 = self.load_icon(self.VENDOR_DIR + 'icons/4000.png')
+        self.w5000 = self.load_icon(self.VENDOR_DIR + 'icons/5000.png')
+        self.w6000 = self.load_icon(self.VENDOR_DIR + 'icons/6000.png')
+        self.w7000 = self.load_icon(self.VENDOR_DIR + 'icons/7000.png')
+        self.w8000 = self.load_icon(self.VENDOR_DIR + 'icons/8000.png')
 
-    def recolor_icon(self, image, recolor=None):
+    def load_font(self, path):
+        font = graphics.Font()
+        font.LoadFont(path)
+        return font
+
+    def load_icon(self, path, recolor=None):
+        image = Image.open(path)
         image = image.convert('RGB')
         if recolor is None:
             recolor = RGB['blue']
