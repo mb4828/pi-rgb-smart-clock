@@ -18,12 +18,12 @@ class Clock(GraphicsBase):
     DAY_POS = (3, 8)
     MONTH_POS = (3, 16)
     DATE_POS = (16, 16)
-    INDOOR_ICON_POS = (2, 22)
-    INDOOR_POS = (11, 29)
-    OUTDOOR_ICON_POS = (34, 22)
-    OUTDOOR_POS = (44, 29)
-    HIGH_POS = (44, 21)
-    LOW_POS = (54, 21)
+    INDOOR_ICON_POS = (2, 20)
+    INDOOR_POS = (11, 27)
+    OUTDOOR_ICON_POS = (34, 20)
+    OUTDOOR_POS = (44, 27)
+    HIGH_POS = (44, 32)
+    LOW_POS = (54, 32)
     
     _show_sec = True
 
@@ -36,34 +36,39 @@ class Clock(GraphicsBase):
         self.font_sm = self.load_font(self.VENDOR_DIR + 'fonts/4x6.bdf')
 
         self.home = self.load_icon(self.VENDOR_DIR + 'icons/home.png')
-        self.w1000 = self.load_icon(self.VENDOR_DIR + 'icons/1000.png')
-        self.w1001 = self.load_icon(self.VENDOR_DIR + 'icons/1001.png')
-        self.w1100 = self.load_icon(self.VENDOR_DIR + 'icons/1100.png')
-        self.w2000 = self.load_icon(self.VENDOR_DIR + 'icons/2000.png')
+        self.w1000 = self.load_icon(self.VENDOR_DIR + 'icons/1000.png', RGB['gold'])
+        self.w1001 = self.load_icon(self.VENDOR_DIR + 'icons/1001.png', RGB['gray'])
+        self.w1100 = self.load_icon(self.VENDOR_DIR + 'icons/1100.png', RGB['gold'], RGB['gray'])
+        self.w2000 = self.load_icon(self.VENDOR_DIR + 'icons/2000.png', RGB['dimgray'])
         self.w4000 = self.load_icon(self.VENDOR_DIR + 'icons/4000.png')
-        self.w5000 = self.load_icon(self.VENDOR_DIR + 'icons/5000.png')
-        self.w6000 = self.load_icon(self.VENDOR_DIR + 'icons/6000.png')
-        self.w7000 = self.load_icon(self.VENDOR_DIR + 'icons/7000.png')
-        self.w8000 = self.load_icon(self.VENDOR_DIR + 'icons/8000.png')
+        self.w5000 = self.load_icon(self.VENDOR_DIR + 'icons/5000.png', RGB['silver'])
+        self.w6000 = self.load_icon(self.VENDOR_DIR + 'icons/6000.png', RGB['silver'])
+        self.w7000 = self.load_icon(self.VENDOR_DIR + 'icons/7000.png', RGB['red'])
+        self.w8000 = self.load_icon(self.VENDOR_DIR + 'icons/8000.png', RGB['orange'])
 
     def load_font(self, path):
         font = graphics.Font()
         font.LoadFont(path)
         return font
 
-    def load_icon(self, path, recolor=None):
+    def load_icon(self, path, color_white=None, color_blue=None):
         image = Image.open(path)
         image = image.convert('RGB')
-        if recolor is None:
-            recolor = RGB['blue']
+
+        if color_white is None:
+            color_white = RGB['blue']
+        if color_blue is None:
+            color_blue = RGB['blue']
 
         width, height = image.size
         pixels = image.load()
         for x in range(width):
             for y in range(height):
                 pixel_color = pixels[x,y]
-                if pixel_color[0] > 250 and pixel_color[1] > 250  and pixel_color[2] > 250:
-                    pixels[x, y] = recolor
+                if pixel_color[0] > 250 and pixel_color[1] > 250 and pixel_color[2] > 250:
+                    pixels[x, y] = color_white
+                if pixel_color[0] < 5 and pixel_color[1] < 5 and pixel_color[2] > 250:
+                    pixels[x, y] = color_blue
         return image
 
     def get_weather_icon(self, code):
@@ -97,8 +102,9 @@ class Clock(GraphicsBase):
         indoor_temp = f"{round(TemperApi.fetch().get('temp') * 1.8 + 32)}°"
         outdoor_temp = f"{WeatherApi.fetch().get('temp',0)}°"
         outdoor_code = WeatherApi.fetch().get('icon')
-        high_temp = str(ForecastApi.fetch()[0].get('high_temp', 0))
-        low_temp = str(ForecastApi.fetch()[0].get('low_temp', 0))
+        forecast = ForecastApi.fetch()[0] if len(ForecastApi.fetch()) > 0 else {}
+        high_temp = str(forecast.get('high_temp', 0))
+        low_temp = str(forecast.get('low_temp', 0))
 
         canvas = self.matrix
         canvas.Clear()
