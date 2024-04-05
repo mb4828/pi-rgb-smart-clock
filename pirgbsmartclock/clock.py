@@ -86,8 +86,8 @@ class Clock(GraphicsBase):
         current_month = now.strftime('%b')
         current_date = now.strftime('%-d')
         current_day = now.strftime('%a')
-        outdoor_temp = '70' #f"{round(WeatherApi.fetch().get('temp',0))}°"
-        outdoor_code = 7000 #WeatherApi.fetch().get('icon')
+        outdoor_temp = f"{round(WeatherApi.fetch().get('temp',0))}°"
+        outdoor_code = WeatherApi.fetch().get('icon')
         indoor_temp = f"{round(TemperApi.fetch().get('temp') * 1.8 + 32)}°"
 
         canvas = self.matrix
