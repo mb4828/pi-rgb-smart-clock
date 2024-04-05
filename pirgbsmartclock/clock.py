@@ -47,6 +47,7 @@ class Clock(GraphicsBase):
         self.w6000 = self.load_icon(self.VENDOR_DIR + 'icons/6000.png', RGB['silver'])
         self.w7000 = self.load_icon(self.VENDOR_DIR + 'icons/7000.png', RGB['red'])
         self.w8000 = self.load_icon(self.VENDOR_DIR + 'icons/8000.png', RGB['orange'])
+        self.wother = self.load_icon(self.VENDOR_DIR + 'icons/0.png')
 
     def load_font(self, path):
         font = graphics.Font()
@@ -79,7 +80,7 @@ class Clock(GraphicsBase):
             return self.w1000
         elif code == '1001':
             return self.w1001
-        elif code == '1100':
+        elif code.startswith('11'):
             return self.w1100
         elif code.startswith('2'):
             return self.w2000
@@ -93,7 +94,8 @@ class Clock(GraphicsBase):
             return self.w7000
         elif code.startswith('8'):
             return self.w8000
-        return self.w1000
+        print(code)
+        return self.wother
 
     def run(self, show_clock):
         now = datetime.now()
