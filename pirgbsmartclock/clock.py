@@ -14,7 +14,7 @@ class Clock(GraphicsBase):
     GREEN = graphics.Color(*RGB['lightseagreen'])
     BLUE = graphics.Color(*RGB['blue'])
 
-    CLOCK_POS = (28, 12)
+    CLOCK_POS = (23, 12)
     DAY_POS = (2, 7)
     MONTH_POS = (2, 15)
     DATE_POS = (15, 15)
@@ -32,7 +32,7 @@ class Clock(GraphicsBase):
         super(Clock, self).__init__(*args, **kwargs)
         self.process()
 
-        self.font_lg = self.load_font(self.VENDOR_DIR + 'fonts/7x14B.bdf')
+        self.font_lg = self.load_font(self.VENDOR_DIR + 'fonts/8x13B.bdf')
         self.font_md = self.load_font(self.VENDOR_DIR + 'fonts/6x10.bdf')
         self.font_sm = self.load_font(self.VENDOR_DIR + 'fonts/4x6.bdf')
 
