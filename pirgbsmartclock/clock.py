@@ -13,22 +13,21 @@ sun = Sun(LATITUDE, LONGITUDE)
 
 class Clock(GraphicsBase):
     VENDOR_DIR = './pirgbsmartclock/vendor/'
-    BLACK = graphics.Color(*RGB['black'])
     RED = graphics.Color(*RGB['red'])
     GREEN = graphics.Color(*RGB['lightseagreen'])
     BLUE = graphics.Color(*RGB['blue'])
 
-    CLOCK_POS = (23, 12)
-    DAY_POS = (2, 7)
-    MONTH_POS = (2, 15)
-    DATE_POS = (15, 15)
-    INDOOR_ICON_POS = (1, 19)
-    INDOOR_POS = (10, 26)
-    OUTDOOR_ICON_POS = (32, 19)
-    OUTDOOR_POS = (42, 26)
-    HIGH_POS = (42, 32)
-    LOW_POS = (52, 32)
-    RAIN_LIKELY_POS = (32, 27)
+    CLOCK_POS = (24, 11)
+    DAY_POS = (1, 6)
+    MONTH_POS = (1, 14)
+    DATE_POS = (14, 14)
+    INDOOR_ICON_POS = (0, 18)
+    INDOOR_POS = (9, 25)
+    OUTDOOR_ICON_POS = (32, 18)
+    OUTDOOR_POS = (42, 25)
+    HIGH_POS = (42, 31)
+    LOW_POS = (52, 31)
+    RAIN_LIKELY_POS = (32, 26)
     
     _show_sec = True
 
@@ -82,22 +81,21 @@ class Clock(GraphicsBase):
 
     def get_weather_icon(self, code):
         code = str(code)
-
-        show_night_icon = False
+        is_night = False
         try:
             now = datetime.now(pytz.timezone(TIMEZONE))
             sunrise = sun.get_sunrise_time().astimezone(pytz.timezone(TIMEZONE))
             sunset = sun.get_sunset_time().astimezone(pytz.timezone(TIMEZONE))
-            show_night_icon = now > sunset and now < sunrise
+            is_night = now > sunset and now < sunrise
         except SunTimeExcpetion:
             pass
 
         if code == '1000':
-            return self.w1000 if not show_night_icon else self.w1000n
+            return self.w1000 if not is_night else self.w1000n
         elif code == '1001':
             return self.w1001
         elif code.startswith('11'):
-            return self.w1100 if not show_night_icon else self.w1100n
+            return self.w1100 if not is_night else self.w1100n
         elif code.startswith('2'):
             return self.w2000
         elif code.startswith('4'):
@@ -127,7 +125,7 @@ class Clock(GraphicsBase):
         forecast = ForecastApi.fetch()[0] if len(ForecastApi.fetch()) > 0 else {}
         high_temp = str(forecast.get('high_temp', 0))
         low_temp = str(forecast.get('low_temp', 0))
-        rain_likely = forecast.get('rain_likely')
+        rain_likely = forecast.get('rain_likely', False)
 
         canvas = self.matrix
         canvas.Clear()
@@ -162,8 +160,3 @@ class Clock(GraphicsBase):
             if rain_likely:
                 canvas.SetImage(self.umbrella, self.RAIN_LIKELY_POS[0], self.RAIN_LIKELY_POS[1])
 
-# Main function
-if __name__ == "__main__":
-    graphics_test = GraphicsTest()
-    if (not graphics_test.process()):
-        graphics_test.print_help()
