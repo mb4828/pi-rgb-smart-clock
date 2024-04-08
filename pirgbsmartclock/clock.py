@@ -1,10 +1,11 @@
 import time
+import pytz
 from datetime import datetime
 from colour import COLOR_NAME_TO_RGB as RGB
 from rgbmatrix import graphics
 from PIL import Image
 from suntime import Sun, SunTimeException
-from config import LATITUDE, LONGITUDE
+from config import LATITUDE, LONGITUDE, TIMEZONE
 from .graphics_base import GraphicsBase
 from .api import ForecastApi, WeatherApi, TemperApi
 
@@ -84,9 +85,9 @@ class Clock(GraphicsBase):
 
         show_night_icon = False
         try:
-            now = datetime.now()
-            sunrise = sun.get_local_sunrise_time()
-            sunset = sun.get_local_sunset_time()
+            now = datetime.now(pytz.timezone(TIMEZONE))
+            sunrise = sun.get_sunrise_time().astimezone(pytz.timezone(TIMEZONE))
+            sunset = sun.get_sunset_time().astimezone(pytz.timezone(TIMEZONE))
             show_night_icon = now > sunset and now < sunrise
         except SunTimeExcpetion:
             pass
