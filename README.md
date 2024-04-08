@@ -45,6 +45,8 @@ Copyright &copy; 2024 Matt Brauner
     TOMORROWIO_ZIP_CODE = 'yourZipCode US'
 
     TIMEZONE = 'Your timezone'
+    LATITUDE = Your latitude
+    LONGITUDE = Your longitude
     ```
 1. Run [main.py](./main.py)
 

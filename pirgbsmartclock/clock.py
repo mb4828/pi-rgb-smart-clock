@@ -3,9 +3,12 @@ from datetime import datetime
 from colour import COLOR_NAME_TO_RGB as RGB
 from rgbmatrix import graphics
 from PIL import Image
+from suntime import Sun, SunTimeException
+from config import LATITUDE, LONGITUDE
 from .graphics_base import GraphicsBase
 from .api import ForecastApi, WeatherApi, TemperApi
 
+sun = Sun(LATITUDE, LONGITUDE)
 
 class Clock(GraphicsBase):
     VENDOR_DIR = './pirgbsmartclock/vendor/'
@@ -39,13 +42,15 @@ class Clock(GraphicsBase):
         self.home = self.load_icon(self.VENDOR_DIR + 'icons/home.png')
         self.umbrella = self.load_icon(self.VENDOR_DIR + 'icons/umbrella_small.png')
         self.w1000 = self.load_icon(self.VENDOR_DIR + 'icons/1000.png', RGB['gold'])
+        self.w1000n = self.load_icon(self.VENDOR_DIR + 'icons/1000n.png', RGB['silver'])
         self.w1001 = self.load_icon(self.VENDOR_DIR + 'icons/1001.png', RGB['gray'])
         self.w1100 = self.load_icon(self.VENDOR_DIR + 'icons/1100.png', RGB['gold'], RGB['gray'])
-        self.w2000 = self.load_icon(self.VENDOR_DIR + 'icons/2000.png', RGB['dimgray'])
+        self.w1100n = self.load_icon(self.VENDOR_DIR + 'icons/1100n.png', RGB['silver'], RGB['gray'])
+        self.w2000 = self.load_icon(self.VENDOR_DIR + 'icons/2000.png', RGB['gray'])
         self.w4000 = self.load_icon(self.VENDOR_DIR + 'icons/4000.png')
         self.w5000 = self.load_icon(self.VENDOR_DIR + 'icons/5000.png', RGB['silver'])
         self.w6000 = self.load_icon(self.VENDOR_DIR + 'icons/6000.png', RGB['silver'])
-        self.w7000 = self.load_icon(self.VENDOR_DIR + 'icons/7000.png', RGB['red'])
+        self.w7000 = self.load_icon(self.VENDOR_DIR + 'icons/7000.png', RGB['red'], RGB['silver'])
         self.w8000 = self.load_icon(self.VENDOR_DIR + 'icons/8000.png', RGB['orange'])
         self.wother = self.load_icon(self.VENDOR_DIR + 'icons/0.png')
 
@@ -76,12 +81,22 @@ class Clock(GraphicsBase):
 
     def get_weather_icon(self, code):
         code = str(code)
+
+        show_night_icon = False
+        try:
+            now = datetime.now()
+            sunrise = sun.get_local_sunrise_time()
+            sunset = sun.get_local_sunset_time()
+            show_night_icon = now > sunset and now < sunrise
+        except SunTimeExcpetion:
+            pass
+
         if code == '1000':
-            return self.w1000
+            return self.w1000 if not show_night_icon else self.w1000n
         elif code == '1001':
             return self.w1001
         elif code.startswith('11'):
-            return self.w1100
+            return self.w1100 if not show_night_icon else self.w1100n
         elif code.startswith('2'):
             return self.w2000
         elif code.startswith('4'):
@@ -103,9 +118,11 @@ class Clock(GraphicsBase):
         current_month = now.strftime('%b')
         current_date = now.strftime('%-d')
         current_day = now.strftime('%a')
+        
         indoor_temp = f"{round(TemperApi.fetch().get('temp') * 1.8 + 32)}°"
         outdoor_temp = f"{WeatherApi.fetch().get('temp',0)}°"
         outdoor_code = WeatherApi.fetch().get('icon')
+        
         forecast = ForecastApi.fetch()[0] if len(ForecastApi.fetch()) > 0 else {}
         high_temp = str(forecast.get('high_temp', 0))
         low_temp = str(forecast.get('low_temp', 0))
