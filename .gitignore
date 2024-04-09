@@ -128,5 +128,6 @@ cython_debug/
 
 # Misc
 config.py
+custom_holidays.csv
 .DS_Store
 rpi-rgb-led-matrix/

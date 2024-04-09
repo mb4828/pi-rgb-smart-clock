@@ -48,6 +48,10 @@ Copyright &copy; 2024 Matt Brauner
     LATITUDE = Your latitude
     LONGITUDE = Your longitude
     ```
+1. For custom holidays, create a [custom_holidays.csv](./custom_holidays.csv) file with the following content
+    ```
+    MM-DD,Holiday Name
+    ```
 1. Run [main.py](./main.py)
 
 

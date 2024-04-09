@@ -7,12 +7,13 @@ from PIL import Image
 from suntime import Sun, SunTimeException
 from config import LATITUDE, LONGITUDE, TIMEZONE
 from .graphics_base import GraphicsBase
-from .api import ForecastApi, WeatherApi, TemperApi
+from .api import ForecastApi, WeatherApi, TemperApi, HolidayApi
 
 sun = Sun(LATITUDE, LONGITUDE)
 
 class Clock(GraphicsBase):
     VENDOR_DIR = './pirgbsmartclock/vendor/'
+    BLACK = graphics.Color(*RGB['black'])
     RED = graphics.Color(*RGB['red'])
     GREEN = graphics.Color(*RGB['lightseagreen'])
     BLUE = graphics.Color(*RGB['blue'])
@@ -21,16 +22,16 @@ class Clock(GraphicsBase):
     DAY_POS = (1, 6)
     MONTH_POS = (1, 14)
     DATE_POS = (14, 14)
-    INDOOR_ICON_POS = (0, 18)
-    INDOOR_POS = (9, 25)
-    OUTDOOR_ICON_POS = (32, 18)
-    OUTDOOR_POS = (42, 25)
+    INDOOR_ICON_POS = (0, 17)
+    INDOOR_POS = (9, 24)
+    OUTDOOR_ICON_POS = (32, 17)
+    OUTDOOR_POS = (42, 24)
     HIGH_POS = (42, 31)
     LOW_POS = (52, 31)
     RAIN_LIKELY_POS = (32, 26)
-    
-    _show_sec = True
 
+    scroll_pos = 32
+    
     def __init__(self, *args, **kwargs):
         super(Clock, self).__init__(*args, **kwargs)
         self.process()
@@ -113,10 +114,11 @@ class Clock(GraphicsBase):
 
     def run(self, show_clock):
         now = datetime.now()
-        current_time = now.strftime("%l:%M") if self._show_sec else now.strftime("%l %M")
+        current_time = now.strftime("%l:%M") if now.microsecond > 500000 else now.strftime("%l %M")
         current_month = now.strftime('%b')
         current_date = now.strftime('%-d')
         current_day = now.strftime('%a')
+        current_holiday = HolidayApi.fetch()
         
         indoor_temp = f"{round(TemperApi.fetch().get('temp') * 1.8 + 32)}°"
         outdoor_temp = f"{WeatherApi.fetch().get('temp',0)}°"
@@ -131,9 +133,17 @@ class Clock(GraphicsBase):
         canvas.Clear()
 
         if show_clock:
+            # draw text scroll
+            if len(current_holiday) > 0:
+                graphics.DrawText(canvas, self.font_sm, self.scroll_pos, 31, self.BLUE, current_holiday)
+                if abs(self.scroll_pos) > len(current_holiday)*4:
+                    self.scroll_pos = 32 # reset scroll
+                else:
+                    self.scroll_pos = self.scroll_pos-1
+            graphics.DrawText(canvas, self.font_sm, 32, 31, self.BLACK, '████████')
+
             # draw clock
             graphics.DrawText(canvas, self.font_lg, self.CLOCK_POS[0], self.CLOCK_POS[1], self.BLUE, current_time)
-            self._show_sec = not self._show_sec
             
             # draw date
             graphics.DrawText(canvas, self.font_sm, self.DATE_POS[0], self.DATE_POS[1], self.GREEN, current_date)

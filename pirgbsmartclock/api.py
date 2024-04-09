@@ -7,6 +7,8 @@ import logging
 from bs4 import BeautifulSoup
 from pirgbsmartclock.vendor.temper import USBRead, USBList
 import requests
+import holidays
+import csv
 
 from config import TOMORROWIO_API_KEY, TOMORROWIO_ZIP_CODE
 
@@ -133,6 +135,31 @@ class TemperApi(Api):
             logging.error(f'Failed to fetch Temper data. Error: {e}')
             return {'temp': -1}
 
+class HolidayApi(Api):
+    HOLIDAYS = holidays.US() + holidays.NYSE()
+
+    try:
+        custom_holidays = {}
+        with open('custom_holidays.csv') as f:
+            year = datetime.now().strftime('%Y-')
+            reader = csv.reader(f)
+            for row in reader:
+                custom_holidays[year + row[0]] = row[1]
+        HOLIDAYS.append(custom_holidays)
+    except Exception as e:
+        logging.error(f'Failed to load custom_holidays.csv\n{e}', exc_info=True)
+
+    def _fetch():
+        today = datetime.now().strftime('%Y-%m-%d')
+        if today in HolidayApi.HOLIDAYS:
+            hol = HolidayApi.HOLIDAYS.get(today)
+            if 'C:' in hol:
+                return hol[2:]
+            elif 'Christmas' in hol:
+                return f'Merry {hol}'
+            return f'Happy {hol}'
+        return ''
+
 
 def get_time():
     return datetime.now().strftime('%-I:%M:%S %p')
@@ -148,6 +175,6 @@ def get_all():
         "local_date": get_date(),
         "weather": WeatherApi.fetch(),
         "forecast": ForecastApi.fetch(),
-        # "stocks": StockApi.fetch(),
+        "stocks": StockApi.fetch(),
         "temper": TemperApi.fetch()
     }

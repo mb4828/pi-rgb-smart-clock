@@ -15,6 +15,11 @@ logging.basicConfig(encoding='utf-8', level=logging.INFO, format="%(asctime)s %(
 os.environ['TZ'] = TIMEZONE
 time.tzset()
 
+try:
+    os.nice(-20) # make this process high priority to improve clock frame rate
+except:
+    pass
+
 def run_clock(message_queue):
     clock = Clock()
     show_clock = True
@@ -29,7 +34,7 @@ def run_clock(message_queue):
             pass  # no new messages - continue
 
         clock.run(show_clock)
-        time.sleep(0.5)
+        time.sleep(0.1)
 
 
 def run_temper():
