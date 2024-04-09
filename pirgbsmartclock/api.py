@@ -121,7 +121,7 @@ class StockApi(Api):
 
 
 class TemperApi(Api):
-    FETCH_INTEVAL = 0.1  # every 10 seconds
+    FETCH_INTEVAL = 2  # every 2 minutes
 
     def _fetch():
         try:
