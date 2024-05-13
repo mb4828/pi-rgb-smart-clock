@@ -87,7 +87,7 @@ class Clock(GraphicsBase):
             now = datetime.now(pytz.timezone(TIMEZONE))
             sunrise = sun.get_sunrise_time().astimezone(pytz.timezone(TIMEZONE))
             sunset = sun.get_sunset_time().astimezone(pytz.timezone(TIMEZONE))
-            is_night = now > sunset and now < sunrise
+            is_night = now > sunset or now < sunrise
         except SunTimeExcpetion:
             pass
 
