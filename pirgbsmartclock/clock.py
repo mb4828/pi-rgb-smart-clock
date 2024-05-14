@@ -84,13 +84,13 @@ class Clock(GraphicsBase):
         code = str(code)
         is_night = False
         try:
-            now = datetime.now(pytz.timezone(TIMEZONE))
-            sunrise = sun.get_sunrise_time().astimezone(pytz.timezone(TIMEZONE))
-            sunset = sun.get_sunset_time().astimezone(pytz.timezone(TIMEZONE))
+            now = datetime.now(pytz.timezone(TIMEZONE)).time()
+            sunrise = sun.get_sunrise_time().astimezone(pytz.timezone(TIMEZONE)).time()
+            sunset = sun.get_sunset_time().astimezone(pytz.timezone(TIMEZONE)).time()
             is_night = now > sunset or now < sunrise
         except SunTimeExcpetion:
             pass
-
+        
         if code == '1000':
             return self.w1000 if not is_night else self.w1000n
         elif code == '1001':
