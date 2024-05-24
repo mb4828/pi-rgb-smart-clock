@@ -45,7 +45,7 @@ def run_temper():
             req = requests.get(f'http://{HOMEBRIDGE_IP}:{HOMEBRIDGE_PORT}/?accessoryId=temper2sensor&value={temp}')
             logging.info(f'Sent temperature to Homebridge and received code {req.status_code}')
         except Exception as e:
-            logging.warning('Failed to transmit Temper data to Homebridge: ' + e)
+            logging.warning(f'Failed to transmit Temper data to Homebridge: {e}')
         time.sleep(60)
 
 
