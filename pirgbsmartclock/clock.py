@@ -112,6 +112,9 @@ class Clock(GraphicsBase):
         return self.wother
 
     def run(self, show_clock):
+        if not show_clock:
+            return
+
         now = datetime.now()
         current_time = now.strftime("%l:%M") if now.microsecond > 500000 else now.strftime("%l %M")
         current_month = now.strftime('%b')
@@ -131,41 +134,40 @@ class Clock(GraphicsBase):
         canvas = self.matrix
         canvas.Clear()
 
-        if show_clock:
-            # draw text scroll
-            if len(current_holiday) > 0:
-                graphics.DrawText(canvas, self.font_sm, self.scroll_pos, 31, self.BLUE, current_holiday)
-                if abs(self.scroll_pos) > len(current_holiday)*4:
-                    self.scroll_pos = 32 # reset scroll
-                else:
-                    self.scroll_pos = self.scroll_pos-1
-            graphics.DrawText(canvas, self.font_sm, 32, 31, self.BLACK, '████████')
+        # draw text scroll
+        if len(current_holiday) > 0:
+            graphics.DrawText(canvas, self.font_sm, self.scroll_pos, 31, self.BLUE, current_holiday)
+            if abs(self.scroll_pos) > len(current_holiday)*4:
+                self.scroll_pos = 32 # reset scroll
+            else:
+                self.scroll_pos = self.scroll_pos-1
+        graphics.DrawText(canvas, self.font_sm, 32, 31, self.BLACK, '████████')
 
-            # draw clock
-            graphics.DrawText(canvas, self.font_lg, self.CLOCK_POS[0], self.CLOCK_POS[1], self.BLUE, current_time)
+        # draw clock
+        graphics.DrawText(canvas, self.font_lg, self.CLOCK_POS[0], self.CLOCK_POS[1], self.BLUE, current_time)
             
-            # draw date
-            graphics.DrawText(canvas, self.font_sm, self.DATE_POS[0], self.DATE_POS[1], self.GREEN, current_date)
+        # draw date
+        graphics.DrawText(canvas, self.font_sm, self.DATE_POS[0], self.DATE_POS[1], self.GREEN, current_date)
 
-            # draw month
-            graphics.DrawText(canvas, self.font_sm, self.MONTH_POS[0], self.MONTH_POS[1], self.GREEN, current_month)
+        # draw month
+        graphics.DrawText(canvas, self.font_sm, self.MONTH_POS[0], self.MONTH_POS[1], self.GREEN, current_month)
 
-            # draw day
-            graphics.DrawText(canvas, self.font_sm, self.DAY_POS[0], self.DAY_POS[1], self.GREEN, current_day)
+        # draw day
+        graphics.DrawText(canvas, self.font_sm, self.DAY_POS[0], self.DAY_POS[1], self.GREEN, current_day)
             
-            # draw indoor temp
-            graphics.DrawText(canvas, self.font_md, self.INDOOR_POS[0], self.INDOOR_POS[1], self.GREEN, indoor_temp)
+        # draw indoor temp
+        graphics.DrawText(canvas, self.font_md, self.INDOOR_POS[0], self.INDOOR_POS[1], self.GREEN, indoor_temp)
 
-            # draw outdoor temp
-            graphics.DrawText(canvas, self.font_md, self.OUTDOOR_POS[0], self.OUTDOOR_POS[1], self.GREEN, outdoor_temp)
+        # draw outdoor temp
+        graphics.DrawText(canvas, self.font_md, self.OUTDOOR_POS[0], self.OUTDOOR_POS[1], self.GREEN, outdoor_temp)
 
-            # draw high and low temp
-            graphics.DrawText(canvas, self.font_sm, self.HIGH_POS[0], self.HIGH_POS[1], self.RED, high_temp)
-            graphics.DrawText(canvas, self.font_sm, self.LOW_POS[0], self.LOW_POS[1], self.BLUE, low_temp)
+        # draw high and low temp
+        graphics.DrawText(canvas, self.font_sm, self.HIGH_POS[0], self.HIGH_POS[1], self.RED, high_temp)
+        graphics.DrawText(canvas, self.font_sm, self.LOW_POS[0], self.LOW_POS[1], self.BLUE, low_temp)
 
-            # draw icons
-            canvas.SetImage(self.home, self.INDOOR_ICON_POS[0], self.INDOOR_ICON_POS[1])
-            canvas.SetImage(self.get_weather_icon(outdoor_code), self.OUTDOOR_ICON_POS[0], self.OUTDOOR_ICON_POS[1])
-            if rain_likely:
-                canvas.SetImage(self.umbrella, self.RAIN_LIKELY_POS[0], self.RAIN_LIKELY_POS[1])
+        # draw icons
+        canvas.SetImage(self.home, self.INDOOR_ICON_POS[0], self.INDOOR_ICON_POS[1])
+        canvas.SetImage(self.get_weather_icon(outdoor_code), self.OUTDOOR_ICON_POS[0], self.OUTDOOR_ICON_POS[1])
+        if rain_likely:
+            canvas.SetImage(self.umbrella, self.RAIN_LIKELY_POS[0], self.RAIN_LIKELY_POS[1])
 
