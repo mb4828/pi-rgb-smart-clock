@@ -113,6 +113,7 @@ class Clock(GraphicsBase):
 
     def run(self, show_clock):
         if not show_clock:
+            self.matrix.Clear()
             return
 
         now = datetime.now()
