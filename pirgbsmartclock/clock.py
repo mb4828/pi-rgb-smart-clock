@@ -109,7 +109,6 @@ class Clock(GraphicsBase):
             return self.w7000
         elif code.startswith('8'):
             return self.w8000
-        print(code)
         return self.wother
 
     def run(self, show_clock):
