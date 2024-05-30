@@ -48,7 +48,8 @@ class Api:
 
 
 class WeatherApi(Api):
-    def _fetch(cls):
+    @classmethod
+    async def _fetch(cls):
         try:
             request = requests.get(
                 'https://api.tomorrow.io/v4/weather/realtime',
@@ -65,14 +66,14 @@ class WeatherApi(Api):
                 'humidity': round(data.get('humidity', 0)),
                 'icon': data.get('weatherCode')
             }
-            cls.reset_fetch()
         except requests.exceptions.RequestException as e:
             logging.error(f"Request failed. Error: {e}")
             cls._cached_data = {}
 
 
 class ForecastApi(Api):
-    def _fetch(cls):
+    @classmethod
+    async def _fetch(cls):
         results = []
         try:
             request = requests.get(
@@ -103,7 +104,8 @@ class ForecastApi(Api):
 class StockApi(Api):
     FETCH_INTEVAL = 0.25  # every 15 seconds
 
-    def _fetch(cls):
+    @classmethod
+    async def _fetch(cls):
         index_list = {
             '^GSPC': 'S&P',
             '^DJI': 'Dow',
@@ -137,7 +139,8 @@ class StockApi(Api):
 class TemperApi(Api):
     FETCH_INTEVAL = 2  # every 2 minutes
 
-    def _fetch(cls):
+    @classmethod
+    async def _fetch(cls):
         try:
             device_list = USBList().get_usb_devices()
             device = device_list.get(next(k for k, v in device_list.items() if v.get('product') == 'TEMPer2'))
@@ -164,7 +167,8 @@ class HolidayApi(Api):
     except Exception as e:
         logging.error(f'Failed to load custom_holidays.csv\n{e}', exc_info=True)
 
-    def _fetch(cls):
+    @classmethod
+    async def _fetch(cls):
         today = datetime.now().strftime('%Y-%m-%d')
         if today in HolidayApi.HOLIDAYS:
             hol = HolidayApi.HOLIDAYS.get(today)
