@@ -10,7 +10,7 @@ import requests
 import holidays
 import csv
 
-from config import TOMORROWIO_API_KEY, TOMORROWIO_ZIP_CODE
+from config import TOMORROWIO_API_KEY, TOMORROWIO_LOCATION
 
 
 class Api:
@@ -40,7 +40,7 @@ class WeatherApi(Api):
             request = requests.get(
                 'https://api.tomorrow.io/v4/weather/realtime',
                 params={
-                    "location": TOMORROWIO_ZIP_CODE,
+                    "location": TOMORROWIO_LOCATION,
                     "units": "imperial",
                     "apikey": TOMORROWIO_API_KEY
                 }
@@ -134,6 +134,7 @@ class TemperApi(Api):
         except Exception as e:
             logging.error(f'Failed to fetch Temper data. Error: {e}')
             return {'temp': -1}
+
 
 class HolidayApi(Api):
     HOLIDAYS = holidays.US() + holidays.NYSE()
