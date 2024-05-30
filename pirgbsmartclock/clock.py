@@ -42,7 +42,7 @@ class Clock(GraphicsBase):
         self.font_sm = self.load_font(self.VENDOR_DIR + 'fonts/4x6.bdf')
 
         self.home = self.load_icon(self.VENDOR_DIR + 'icons/home.png')
-        self.humidity = self.load_icon(self.VENDOR_DIR + 'icons/humidity.png', RGB['gold'])
+        self.humidity = self.load_icon(self.VENDOR_DIR + 'icons/humidity.png', RGB['orange'])
         self.umbrella = self.load_icon(self.VENDOR_DIR + 'icons/umbrella_small.png')
         self.w1000 = self.load_icon(self.VENDOR_DIR + 'icons/1000.png', RGB['gold'])
         self.w1000n = self.load_icon(self.VENDOR_DIR + 'icons/1000n.png', RGB['silver'])
