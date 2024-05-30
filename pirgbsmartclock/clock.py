@@ -134,7 +134,7 @@ class Clock(GraphicsBase):
             high_temp = str(forecast.get('high_temp', 0))
             low_temp = str(forecast.get('low_temp', 0))
             rain_likely = forecast.get('rain_likely', False)
-            high_humidity = weather.get('humidity') > 60
+            high_humidity = weather.get('humidity', 0) > 60
 
             # draw text scroll
             if len(current_holiday) > 0:
