@@ -51,7 +51,7 @@ def run_temper():
         time.sleep(60)
 
 
-def main():
+async def main():
     message_queue = multiprocessing.Queue()
 
     clock_proc = multiprocessing.Process(target=run_clock, args=(message_queue,))
