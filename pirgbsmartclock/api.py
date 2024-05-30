@@ -65,7 +65,7 @@ class ForecastApi(Api):
                 'https://api.tomorrow.io/v4/weather/forecast',
                 params={
                     "timesteps": '1d',
-                    "location": TOMORROWIO_ZIP_CODE,
+                    "location": TOMORROWIO_LOCATION,
                     "units": "imperial",
                     "apikey": TOMORROWIO_API_KEY
                 }
