@@ -11,6 +11,7 @@ from .api import ForecastApi, WeatherApi, TemperApi, HolidayApi
 
 sun = Sun(LATITUDE, LONGITUDE)
 
+
 class Clock(GraphicsBase):
     VENDOR_DIR = './pirgbsmartclock/vendor/'
     BLACK = graphics.Color(*RGB['black'])
@@ -31,7 +32,7 @@ class Clock(GraphicsBase):
     RAIN_LIKELY_POS = (32, 26)
 
     scroll_pos = 32
-    
+
     def __init__(self, *args, **kwargs):
         super(Clock, self).__init__(*args, **kwargs)
         self.process()
@@ -41,6 +42,7 @@ class Clock(GraphicsBase):
         self.font_sm = self.load_font(self.VENDOR_DIR + 'fonts/4x6.bdf')
 
         self.home = self.load_icon(self.VENDOR_DIR + 'icons/home.png')
+        self.humidity = self.load_icon(self.VENDOR_DIR + 'icons/humidity.png', RGB['gold'])
         self.umbrella = self.load_icon(self.VENDOR_DIR + 'icons/umbrella_small.png')
         self.w1000 = self.load_icon(self.VENDOR_DIR + 'icons/1000.png', RGB['gold'])
         self.w1000n = self.load_icon(self.VENDOR_DIR + 'icons/1000n.png', RGB['silver'])
@@ -73,7 +75,7 @@ class Clock(GraphicsBase):
         pixels = image.load()
         for x in range(width):
             for y in range(height):
-                pixel_color = pixels[x,y]
+                pixel_color = pixels[x, y]
                 if pixel_color[0] > 250 and pixel_color[1] > 250 and pixel_color[2] > 250:
                     pixels[x, y] = color_white
                 if pixel_color[0] < 5 and pixel_color[1] < 5 and pixel_color[2] > 250:
@@ -90,7 +92,7 @@ class Clock(GraphicsBase):
             is_night = now > sunset or now < sunrise
         except SunTimeExcpetion:
             pass
-        
+
         if code == '1000':
             return self.w1000 if not is_night else self.w1000n
         elif code == '1001':
@@ -112,63 +114,63 @@ class Clock(GraphicsBase):
         return self.wother
 
     def run(self, show_clock):
-        if not show_clock:
-            self.matrix.Clear()
-            return
-
-        now = datetime.now()
-        current_time = now.strftime("%l:%M") if now.microsecond > 500000 else now.strftime("%l %M")
-        current_month = now.strftime('%b')
-        current_date = now.strftime('%-d')
-        current_day = now.strftime('%a')
-        current_holiday = HolidayApi.fetch()
-        
-        indoor_temp = f"{round(TemperApi.fetch().get('temp') * 1.8 + 32)}°"
-        outdoor_temp = f"{WeatherApi.fetch().get('temp',0)}°"
-        outdoor_code = WeatherApi.fetch().get('icon')
-        
-        forecast = ForecastApi.fetch()[0] if len(ForecastApi.fetch()) > 0 else {}
-        high_temp = str(forecast.get('high_temp', 0))
-        low_temp = str(forecast.get('low_temp', 0))
-        rain_likely = forecast.get('rain_likely', False)
-
         canvas = self.matrix
         canvas.Clear()
 
-        # draw text scroll
-        if len(current_holiday) > 0:
-            graphics.DrawText(canvas, self.font_sm, self.scroll_pos, 31, self.BLUE, current_holiday)
-            if abs(self.scroll_pos) > len(current_holiday)*4:
-                self.scroll_pos = 32 # reset scroll
-            else:
-                self.scroll_pos = self.scroll_pos-1
-        graphics.DrawText(canvas, self.font_sm, 32, 31, self.BLACK, '████████')
+        if show_clock:
+            now = datetime.now()
+            current_time = now.strftime("%l:%M") if now.microsecond > 500000 else now.strftime("%l %M")
+            current_month = now.strftime('%b')
+            current_date = now.strftime('%-d')
+            current_day = now.strftime('%a')
+            current_holiday = HolidayApi.fetch()
+            temp = TemperApi.fetch()
+            weather = WeatherApi.fetch()
+            forecast = ForecastApi.fetch()[0] if len(ForecastApi.fetch()) > 0 else {}
 
-        # draw clock
-        graphics.DrawText(canvas, self.font_lg, self.CLOCK_POS[0], self.CLOCK_POS[1], self.BLUE, current_time)
-            
-        # draw date
-        graphics.DrawText(canvas, self.font_sm, self.DATE_POS[0], self.DATE_POS[1], self.GREEN, current_date)
+            indoor_temp = f"{round(temp.get('temp') * 1.8 + 32)}°"
+            outdoor_temp = f"{weather.get('temp', 0)}°"
+            outdoor_code = weather.get('icon')
+            high_temp = str(forecast.get('high_temp', 0))
+            low_temp = str(forecast.get('low_temp', 0))
+            rain_likely = forecast.get('rain_likely', False)
+            high_humidity = weather.get('humidity') > 60
 
-        # draw month
-        graphics.DrawText(canvas, self.font_sm, self.MONTH_POS[0], self.MONTH_POS[1], self.GREEN, current_month)
+            # draw text scroll
+            if len(current_holiday) > 0:
+                graphics.DrawText(canvas, self.font_sm, self.scroll_pos, 31, self.BLUE, current_holiday)
+                if abs(self.scroll_pos) > len(current_holiday)*4:
+                    self.scroll_pos = 32  # reset scroll
+                else:
+                    self.scroll_pos = self.scroll_pos-1
+            graphics.DrawText(canvas, self.font_sm, 32, 31, self.BLACK, '████████')
 
-        # draw day
-        graphics.DrawText(canvas, self.font_sm, self.DAY_POS[0], self.DAY_POS[1], self.GREEN, current_day)
-            
-        # draw indoor temp
-        graphics.DrawText(canvas, self.font_md, self.INDOOR_POS[0], self.INDOOR_POS[1], self.GREEN, indoor_temp)
+            # draw clock
+            graphics.DrawText(canvas, self.font_lg, self.CLOCK_POS[0], self.CLOCK_POS[1], self.BLUE, current_time)
 
-        # draw outdoor temp
-        graphics.DrawText(canvas, self.font_md, self.OUTDOOR_POS[0], self.OUTDOOR_POS[1], self.GREEN, outdoor_temp)
+            # draw date
+            graphics.DrawText(canvas, self.font_sm, self.DATE_POS[0], self.DATE_POS[1], self.GREEN, current_date)
 
-        # draw high and low temp
-        graphics.DrawText(canvas, self.font_sm, self.HIGH_POS[0], self.HIGH_POS[1], self.RED, high_temp)
-        graphics.DrawText(canvas, self.font_sm, self.LOW_POS[0], self.LOW_POS[1], self.BLUE, low_temp)
+            # draw month
+            graphics.DrawText(canvas, self.font_sm, self.MONTH_POS[0], self.MONTH_POS[1], self.GREEN, current_month)
 
-        # draw icons
-        canvas.SetImage(self.home, self.INDOOR_ICON_POS[0], self.INDOOR_ICON_POS[1])
-        canvas.SetImage(self.get_weather_icon(outdoor_code), self.OUTDOOR_ICON_POS[0], self.OUTDOOR_ICON_POS[1])
-        if rain_likely:
-            canvas.SetImage(self.umbrella, self.RAIN_LIKELY_POS[0], self.RAIN_LIKELY_POS[1])
+            # draw day
+            graphics.DrawText(canvas, self.font_sm, self.DAY_POS[0], self.DAY_POS[1], self.GREEN, current_day)
 
+            # draw indoor temp
+            graphics.DrawText(canvas, self.font_md, self.INDOOR_POS[0], self.INDOOR_POS[1], self.GREEN, indoor_temp)
+
+            # draw outdoor temp
+            graphics.DrawText(canvas, self.font_md, self.OUTDOOR_POS[0], self.OUTDOOR_POS[1], self.GREEN, outdoor_temp)
+
+            # draw high and low temp
+            graphics.DrawText(canvas, self.font_sm, self.HIGH_POS[0], self.HIGH_POS[1], self.RED, high_temp)
+            graphics.DrawText(canvas, self.font_sm, self.LOW_POS[0], self.LOW_POS[1], self.BLUE, low_temp)
+
+            # draw icons
+            canvas.SetImage(self.home, self.INDOOR_ICON_POS[0], self.INDOOR_ICON_POS[1])
+            canvas.SetImage(self.get_weather_icon(outdoor_code), self.OUTDOOR_ICON_POS[0], self.OUTDOOR_ICON_POS[1])
+            if rain_likely:
+                canvas.SetImage(self.umbrella, self.RAIN_LIKELY_POS[0], self.RAIN_LIKELY_POS[1])
+            elif high_humidity:
+                canvas.SetImage(self.humidity, self.RAIN_LIKELY_POS[0], self.RAIN_LIKELY_POS[1])
