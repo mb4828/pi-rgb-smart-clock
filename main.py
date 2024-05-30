@@ -1,3 +1,4 @@
+import asyncio
 import os
 import logging
 import multiprocessing
@@ -16,9 +17,10 @@ os.environ['TZ'] = TIMEZONE
 time.tzset()
 
 try:
-    os.nice(-20) # make this process high priority to improve clock frame rate
+    os.nice(-20)  # make this process high priority to improve clock frame rate
 except:
     pass
+
 
 def run_clock(message_queue):
     clock = Clock()
@@ -70,4 +72,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
