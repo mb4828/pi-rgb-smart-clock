@@ -115,8 +115,8 @@ class Clock(GraphicsBase):
 
     def run(self, show_clock):
         canvas = self.matrix
-        canvas.Clear()
         if not show_clock:
+            canvas.Clear()
             return
 
         now = datetime.now()
@@ -136,6 +136,8 @@ class Clock(GraphicsBase):
         ui_low_temp = str(forecast.get('low_temp', 0))
         ui_is_rain_likely = forecast.get('rain_likely', False)
         ui_is_high_humidity = weather.get('humidity', 0) > 60
+
+        canvas.Clear()
 
         # draw text scroll
         if len(holiday) > 0:

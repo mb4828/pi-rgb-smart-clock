@@ -69,7 +69,6 @@ class WeatherApi(Api):
         except requests.exceptions.RequestException as e:
             logging.error(f"Request failed. Error: {e}")
             cls._cached_data = {}
-        cls._reset_next_fetch()
 
 
 class ForecastApi(Api):
@@ -100,7 +99,6 @@ class ForecastApi(Api):
         except requests.exceptions.RequestException as e:
             logging.error(f"Request failed. Error: {e}")
         cls._cached_data = results
-        cls._reset_next_fetch()
 
 
 class StockApi(Api):
@@ -136,7 +134,6 @@ class StockApi(Api):
         except requests.exceptions.RequestException as e:
             logging.error(f"Request failed. Error: {e}")
         cls._cached_data = results
-        cls._reset_next_fetch()
 
 
 class TemperApi(Api):
@@ -154,7 +151,6 @@ class TemperApi(Api):
         except Exception as e:
             logging.error(f'Failed to fetch Temper data. Error: {e}')
             cls._cached_data = {'temp': -1}
-        cls._reset_next_fetch()
 
 
 class HolidayApi(Api):
@@ -183,7 +179,6 @@ class HolidayApi(Api):
             cls._cached_data = f'Happy {hol}'
         else:
             cls._cached_data = ''
-        cls._reset_next_fetch()
 
 
 def get_time():
