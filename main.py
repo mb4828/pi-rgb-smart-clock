@@ -1,10 +1,8 @@
 import asyncio
-from concurrent.futures import ProcessPoolExecutor
 import os
 import logging
 import multiprocessing
 import queue
-import signal
 import time
 
 import requests
@@ -53,31 +51,25 @@ def run_temper():
         time.sleep(60)
 
 
-def shutdown(loop):
-    for task in asyncio.all_tasks(loop):
-        task.cancel()
-    loop.stop()
-
-
 async def main():
-    loop = asyncio.get_running_loop()
-    with ProcessPoolExecutor() as executor, multiprocessing.Manager() as manager:
-        message_queue = manager.Queue()  # allow message passing between processes
-        loop.run_in_executor(executor, run_clock, message_queue)
-        loop.run_in_executor(executor, run_server, message_queue)
-        loop.run_in_executor(executor, run_temper)
+    message_queue = multiprocessing.Queue()
+
+    clock_proc = multiprocessing.Process(target=run_clock, args=(message_queue,))
+    clock_proc.start()
+
+    temper_proc = multiprocessing.Process(target=run_temper)
+    temper_proc.start()
+
+    try:
+        run_server(message_queue)
+    except KeyboardInterrupt:
+        pass  # Ctrl+C to terminate Flask
+    finally:
+        clock_proc.terminate()
+        temper_proc.terminate()
+        clock_proc.join()
+        temper_proc.join()
 
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-
-    # shutdown gracefully on Ctrl+C
-    for sig in (signal.SIGINT, signal.SIGTERM):
-        loop.add_signal_handler(sig, lambda: shutdown(loop))
-
-    try:
-        loop.run_until_complete(main())
-    except (KeyboardInterrupt, asyncio.CancelledError):
-        pass
-    finally:
-        loop.close()
+    asyncio.run(main())
