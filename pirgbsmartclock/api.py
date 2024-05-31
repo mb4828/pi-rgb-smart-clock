@@ -2,7 +2,6 @@
 Fetches data from various APIs
 """
 
-import asyncio
 from datetime import datetime, timedelta
 import logging
 from bs4 import BeautifulSoup
@@ -16,39 +15,27 @@ from config import TOMORROWIO_API_KEY, TOMORROWIO_LOCATION
 
 class Api:
     FETCH_INTEVAL = 10  # new data every 10 minutes
-    _next_fetch = datetime(1990, 1, 1)
-    _cached_data = {}
+    next_fetch = datetime(1990, 1, 1)
+    cached_data = {}
+
+    @staticmethod
+    def _fetch():
+        pass  # override this method
 
     @classmethod
-    async def async_get_data(cls):
-        if cls._is_cache_expired():
-            await cls._fetch()
-            cls._reset_next_fetch()
-        return cls._cached_data
+    def fetch(cls):
+        if cls.is_cache_expired():
+            cls.cached_data = cls._fetch()
+            cls.next_fetch = datetime.now() + timedelta(minutes=cls.FETCH_INTEVAL)
+        return cls.cached_data
 
     @classmethod
-    def get_data(cls):
-        if cls._is_cache_expired():
-            asyncio.run(cls._fetch())
-            cls._reset_next_fetch()
-        return cls._cached_data
-
-    @classmethod
-    async def _fetch(cls):
-        # override this method
-        cls._cached_data({})
-
-    @classmethod
-    def _is_cache_expired(cls):
-        return cls._next_fetch <= datetime.now()
-
-    @classmethod
-    def _reset_next_fetch(cls):
-        cls._next_fetch = datetime.now() + timedelta(minutes=cls.FETCH_INTEVAL)
+    def is_cache_expired(cls):
+        return cls.next_fetch <= datetime.now()
 
 
 class WeatherApi(Api):
-    def _fetch(cls):
+    def _fetch():
         try:
             request = requests.get(
                 'https://api.tomorrow.io/v4/weather/realtime',
@@ -60,19 +47,18 @@ class WeatherApi(Api):
             )
             request.raise_for_status()
             data = request.json()["data"]["values"]
-            cls._cached_data = {
+            return {
                 'temp': round(data.get('temperature', 0)),
                 'humidity': round(data.get('humidity', 0)),
                 'icon': data.get('weatherCode')
             }
-            cls.reset_fetch()
         except requests.exceptions.RequestException as e:
             logging.error(f"Request failed. Error: {e}")
-            cls._cached_data = {}
+            return {}
 
 
 class ForecastApi(Api):
-    def _fetch(cls):
+    def _fetch():
         results = []
         try:
             request = requests.get(
@@ -97,13 +83,13 @@ class ForecastApi(Api):
                 })
         except requests.exceptions.RequestException as e:
             logging.error(f"Request failed. Error: {e}")
-        cls._cached_data = results
+        return results
 
 
 class StockApi(Api):
     FETCH_INTEVAL = 0.25  # every 15 seconds
 
-    def _fetch(cls):
+    def _fetch():
         index_list = {
             '^GSPC': 'S&P',
             '^DJI': 'Dow',
@@ -131,23 +117,23 @@ class StockApi(Api):
                     })
         except requests.exceptions.RequestException as e:
             logging.error(f"Request failed. Error: {e}")
-        cls._cached_data = results
+        return results
 
 
 class TemperApi(Api):
     FETCH_INTEVAL = 2  # every 2 minutes
 
-    def _fetch(cls):
+    def _fetch():
         try:
             device_list = USBList().get_usb_devices()
             device = device_list.get(next(k for k, v in device_list.items() if v.get('product') == 'TEMPer2'))
 
             usbread = USBRead(device.get('devices')[-1]).read()
-            cls._cached_data = {'temp': usbread['external temperature']}
+            return {'temp': usbread['external temperature']}
 
         except Exception as e:
             logging.error(f'Failed to fetch Temper data. Error: {e}')
-            cls._cached_data = {'temp': -1}
+            return {'temp': -1}
 
 
 class HolidayApi(Api):
@@ -164,17 +150,16 @@ class HolidayApi(Api):
     except Exception as e:
         logging.error(f'Failed to load custom_holidays.csv\n{e}', exc_info=True)
 
-    def _fetch(cls):
+    def _fetch():
         today = datetime.now().strftime('%Y-%m-%d')
         if today in HolidayApi.HOLIDAYS:
             hol = HolidayApi.HOLIDAYS.get(today)
             if 'C:' in hol:
-                cls._cached_data = hol[2:]
+                return hol[2:]
             elif 'Christmas' in hol:
-                cls._cached_data = f'Merry {hol}'
-            cls._cached_data = f'Happy {hol}'
-        else:
-            cls._cached_data = ''
+                return f'Merry {hol}'
+            return f'Happy {hol}'
+        return ''
 
 
 def get_time():
@@ -183,3 +168,14 @@ def get_time():
 
 def get_date():
     return datetime.now().strftime('%b %-d')
+
+
+def get_all():
+    return {
+        "local_time": get_time(),
+        "local_date": get_date(),
+        "weather": WeatherApi.fetch(),
+        "forecast": ForecastApi.fetch(),
+        "stocks": StockApi.fetch(),
+        "temper": TemperApi.fetch()
+    }

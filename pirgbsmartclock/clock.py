@@ -120,10 +120,10 @@ class Clock(GraphicsBase):
             return
 
         now = datetime.now()
-        temp = TemperApi.get_data()
-        weather = WeatherApi.get_data()
-        forecast = ForecastApi.get_data()[0] if len(ForecastApi.get_data()) > 0 else {}
-        holiday = HolidayApi.get_data()
+        temp = TemperApi.fetch()
+        weather = WeatherApi.fetch()
+        forecast = ForecastApi.fetch()[0] if len(ForecastApi.fetch()) > 0 else {}
+        holiday = HolidayApi.fetch()
 
         ui_time = now.strftime("%l:%M") if now.microsecond > 500000 else now.strftime("%l %M")
         ui_month = now.strftime('%b')
