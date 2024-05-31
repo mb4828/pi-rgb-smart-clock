@@ -113,23 +113,23 @@ class Clock(GraphicsBase):
             return self.w8000
         return self.wother
 
-    def run(self, show_clock):
+    async def run(self, show_clock):
         canvas = self.matrix
         canvas.Clear()
         if not show_clock:
             return
 
         now = datetime.now()
-        temp = TemperApi.get_data()
-        weather = WeatherApi.get_data()
-        forecast = ForecastApi.get_data()[0] if len(ForecastApi.get_data()) > 0 else {}
-        holiday = HolidayApi.get_data()
+        temp = TemperApi.async_get_data()
+        weather = WeatherApi.async_get_data()
+        forecast = ForecastApi.async_get_data()[0] if len(ForecastApi.async_get_data()) > 0 else {}
+        holiday = HolidayApi.async_get_data()
 
         ui_time = now.strftime("%l:%M") if now.microsecond > 500000 else now.strftime("%l %M")
         ui_month = now.strftime('%b')
         ui_date = now.strftime('%-d')
         ui_day = now.strftime('%a')
-        ui_indoor_temp = f"{round(temp.get('temp') * 1.8 + 32)}°"
+        ui_indoor_temp = f"{round(temp.get('temp', 0) * 1.8 + 32)}°"
         ui_outdoor_temp = f"{weather.get('temp', 0)}°"
         ui_outdoor_code = weather.get('icon')
         ui_high_temp = str(forecast.get('high_temp', 0))

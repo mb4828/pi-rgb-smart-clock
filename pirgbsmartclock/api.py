@@ -20,14 +20,13 @@ class Api:
     _cached_data = {}
 
     @classmethod
-    async def async_get_data(cls):
+    def get_data(cls):
         if cls._is_cache_expired():
-            await cls._fetch()
-            cls._reset_next_fetch()
+            asyncio.run(cls._fetch())
         return cls._cached_data
 
     @classmethod
-    def get_data(cls):
+    def async_get_data(cls):
         if cls._is_cache_expired():
             asyncio.create_task(cls._fetch())
             cls._reset_next_fetch()
