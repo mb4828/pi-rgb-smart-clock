@@ -29,7 +29,7 @@ class Api:
     @classmethod
     def get_data(cls):
         if cls._is_cache_expired():
-            asyncio.run(cls._fetch())
+            asyncio.create_task(cls._fetch())
             cls._reset_next_fetch()
         return cls._cached_data
 
@@ -185,10 +185,3 @@ class HolidayApi(Api):
             cls._cached_data = ''
         cls._reset_next_fetch()
 
-
-def get_time():
-    return datetime.now().strftime('%-I:%M:%S %p')
-
-
-def get_date():
-    return datetime.now().strftime('%b %-d')
