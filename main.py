@@ -27,6 +27,8 @@ except:
 exit = Event()
 
 def run_clock(message_queue):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     clock = Clock()
     show_clock = True
 
@@ -39,7 +41,7 @@ def run_clock(message_queue):
         except queue.Empty:
             pass  # no new messages - continue
 
-        asyncio.run(clock.run(show_clock))
+        loop.run_until_complete(clock.run(show_clock))
         exit.wait(0.1)
 
 
