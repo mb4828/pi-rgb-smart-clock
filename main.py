@@ -43,7 +43,7 @@ def run_temper():
     """ Sends Homebridge the temperature reading from Temper2 """
     while True:
         try:
-            temp = TemperApi.async_get_data().get('temp')
+            temp = TemperApi.fetch().get('temp')
             req = requests.get(f'http://{HOMEBRIDGE_IP}:{HOMEBRIDGE_PORT}/?accessoryId=temper2sensor&value={temp}')
             logging.info(f'Sent temperature to Homebridge and received code {req.status_code}')
         except Exception as e:
