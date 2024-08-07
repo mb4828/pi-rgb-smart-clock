@@ -1,9 +1,7 @@
 from datetime import datetime
-from colour import COLOR_NAME_TO_RGB as RGB
-from pirgbsmartclock.utils.constants import BLUE, FONT_LG, FONT_MD, FONT_SM, ICON_HOME, ICON_HUMIDITY, ICON_UMBRELLA, RED, WHITE
-from pirgbsmartclock.utils.utils import get_weather_icon
+from pirgbsmartclock.utils.constants import BLUE, FONT_LG, FONT_MD, FONT_SM, RED, WHITE
+from pirgbsmartclock.utils.weather_utils import ICON_HOME, ICON_HUMIDITY, ICON_UMBRELLA, get_weather_icon
 from rgbmatrix import graphics
-from config import LATITUDE, LONGITUDE
 from .utils.graphics_base import GraphicsBase
 from .api import ForecastApi, WeatherApi, TemperApi, HolidayApi
 
