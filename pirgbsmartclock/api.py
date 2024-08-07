@@ -5,7 +5,7 @@ Fetches data from various APIs
 from datetime import datetime, timedelta
 import logging
 from bs4 import BeautifulSoup
-from pirgbsmartclock.vendor.temper import USBRead, USBList
+from vendor.temper import USBRead, USBList
 import requests
 import holidays
 import csv
