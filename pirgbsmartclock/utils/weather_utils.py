@@ -23,7 +23,7 @@ ICON_W8000 = load_icon(VENDOR_DIR + 'icons/8000.png', RGB['orange'])
 ICON_WOTHER = load_icon(VENDOR_DIR + 'icons/1000.png')
 
 
-def get_weather_icon(self, code):
+def get_weather_icon(code):
     sun = Sun(LATITUDE, LONGITUDE)
     code = str(code)
     is_night = False
