@@ -22,24 +22,24 @@ class Clock(GraphicsBase):
 
     CLOCK_POS = (24, 11)
     DAY_POS = (1, 6)
-    MONTH_POS = (1, 14)
-    DATE_POS = (14, 14)
-    INDOOR_ICON_POS = (0, 17)
-    INDOOR_POS = (9, 24)
-    OUTDOOR_ICON_POS = (32, 17)
-    OUTDOOR_POS = (42, 24)
-    HIGH_POS = (42, 31)
-    LOW_POS = (52, 31)
-    RAIN_LIKELY_POS = (32, 26)
+    MONTH_POS = (1, 13)
+    DATE_POS = (14, 13)
+    INDOOR_ICON_POS = (0, 16)
+    INDOOR_POS = (9, 22)
+    OUTDOOR_ICON_POS = (22, 16)
+    OUTDOOR_POS = (32, 22)
+    HIGH_POS = (45, 22)
+    LOW_POS = (55, 22)
+    RAIN_LIKELY_POS = (15, 1)
 
-    scroll_pos = 32
+    scroll_pos = 64
 
     def __init__(self, *args, **kwargs):
         super(Clock, self).__init__(*args, **kwargs)
         self.process()
 
         self.font_lg = self.load_font(self.VENDOR_DIR + 'fonts/8x13B.bdf')
-        self.font_md = self.load_font(self.VENDOR_DIR + 'fonts/6x10.bdf')
+        self.font_md = self.load_font(self.VENDOR_DIR + 'fonts/5x7.bdf')
         self.font_sm = self.load_font(self.VENDOR_DIR + 'fonts/4x6.bdf')
 
         self.home = self.load_icon(self.VENDOR_DIR + 'icons/home.png')
@@ -56,7 +56,7 @@ class Clock(GraphicsBase):
         self.w6000 = self.load_icon(self.VENDOR_DIR + 'icons/6000.png', RGB['silver'])
         self.w7000 = self.load_icon(self.VENDOR_DIR + 'icons/7000.png', RGB['red'], RGB['silver'])
         self.w8000 = self.load_icon(self.VENDOR_DIR + 'icons/8000.png', RGB['orange'])
-        self.wother = self.load_icon(self.VENDOR_DIR + 'icons/0.png')
+        self.wother = self.load_icon(self.VENDOR_DIR + 'icons/1000.png')
 
     def load_font(self, path):
         font = graphics.Font()
@@ -130,8 +130,8 @@ class Clock(GraphicsBase):
         ui_month = now.strftime('%b')
         ui_date = now.strftime('%-d')
         ui_day = now.strftime('%a')
-        ui_indoor_temp = f"{round(temp.get('temp') * 1.8 + 32)}°"
-        ui_outdoor_temp = f"{weather.get('temp', 0)}°"
+        ui_indoor_temp = f"{round(temp.get('temp') * 1.8 + 32)}"
+        ui_outdoor_temp = f"{weather.get('temp', 0)}"
         ui_outdoor_code = weather.get('icon')
         ui_high_temp = str(forecast.get('high_temp', 0))
         ui_low_temp = str(forecast.get('low_temp', 0))
@@ -142,12 +142,11 @@ class Clock(GraphicsBase):
 
         # draw text scroll
         if len(holiday) > 0:
-            graphics.DrawText(canvas, self.font_sm, self.scroll_pos, 31, self.BLUE, holiday)
-            if abs(self.scroll_pos) > len(holiday)*4:
-                self.scroll_pos = 32  # reset scroll
+            graphics.DrawText(canvas, self.font_sm, self.scroll_pos, 30, self.BLUE, holiday)
+            if self.scroll_pos + len(holiday)*4 <= 0:
+                self.scroll_pos = 64  # reset scroll
             else:
                 self.scroll_pos = self.scroll_pos-1
-        graphics.DrawText(canvas, self.font_sm, 32, 31, self.BLACK, '████████')
 
         # draw clock
         graphics.DrawText(canvas, self.font_lg, self.CLOCK_POS[0], self.CLOCK_POS[1], self.BLUE, ui_time)
