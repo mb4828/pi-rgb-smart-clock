@@ -9,16 +9,17 @@ from .api import ForecastApi, WeatherApi, TemperApi, HolidayApi
 class Clock(GraphicsBase):
     CLOCK_POS = (24, 11)
     DAY_POS = (1, 6)
-    MONTH_POS = (1, 13)
-    DATE_POS = (14, 13)
-    INDOOR_ICON_POS = (0, 16)
-    INDOOR_POS = (9, 22)
-    OUTDOOR_ICON_POS = (22, 16)
-    OUTDOOR_POS = (32, 22)
-    HIGH_POS = (45, 22)
-    LOW_POS = (55, 22)
+    MONTH_POS = (1, 14)
+    DATE_POS = (14, 14)
+    INDOOR_ICON_POS = (0, 25)
+    INDOOR_POS = (9, 31)
+    OUTDOOR_ICON_POS = (22, 25)
+    OUTDOOR_POS = (32, 31)
+    HIGH_POS = (45, 31)
+    LOW_POS = (55, 31)
     RAIN_LIKELY_POS = (15, 1)
-    scroll_pos = 64
+    SCROLL_Y_POS = 22
+    scroll_x_pos = 64
 
     def __init__(self, *args, **kwargs):
         super(Clock, self).__init__(*args, **kwargs)
@@ -34,7 +35,7 @@ class Clock(GraphicsBase):
         temp = TemperApi.fetch()
         weather = WeatherApi.fetch()
         forecast = ForecastApi.fetch()[0] if len(ForecastApi.fetch()) > 0 else {}
-        holiday = HolidayApi.fetch()
+        holiday = 'Happy holidays!'#HolidayApi.fetch()
 
         ui_time = now.strftime("%l:%M") if now.microsecond > 500000 else now.strftime("%l %M")
         ui_month = now.strftime('%b')
@@ -52,11 +53,11 @@ class Clock(GraphicsBase):
 
         # draw text scroll
         if len(holiday) > 0:
-            graphics.DrawText(canvas, FONT_SM, self.scroll_pos, 30, BLUE, holiday)
-            if self.scroll_pos + len(holiday)*4 <= 0:
-                self.scroll_pos = 64  # reset scroll
+            graphics.DrawText(canvas, FONT_SM, self.scroll_x_pos, self.SCROLL_Y_POS, BLUE, holiday)
+            if self.scroll_x_pos + len(holiday)*4 <= 0:
+                self.scroll_x_pos = 64  # reset scroll
             else:
-                self.scroll_pos = self.scroll_pos-1
+                self.scroll_x_pos = self.scroll_x_pos-1
 
         # draw clock
         graphics.DrawText(canvas, FONT_LG, self.CLOCK_POS[0], self.CLOCK_POS[1], BLUE, ui_time)
