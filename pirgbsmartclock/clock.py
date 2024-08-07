@@ -15,6 +15,7 @@ sun = Sun(LATITUDE, LONGITUDE)
 class Clock(GraphicsBase):
     VENDOR_DIR = './pirgbsmartclock/vendor/'
     BLACK = graphics.Color(*RGB['black'])
+    WHITE = graphics.Color(*RGB['lightgray'])
     RED = graphics.Color(*RGB['red'])
     GREEN = graphics.Color(*RGB['lightseagreen'])
     BLUE = graphics.Color(*RGB['blue'])
@@ -152,19 +153,19 @@ class Clock(GraphicsBase):
         graphics.DrawText(canvas, self.font_lg, self.CLOCK_POS[0], self.CLOCK_POS[1], self.BLUE, ui_time)
 
         # draw date
-        graphics.DrawText(canvas, self.font_sm, self.DATE_POS[0], self.DATE_POS[1], self.GREEN, ui_date)
+        graphics.DrawText(canvas, self.font_sm, self.DATE_POS[0], self.DATE_POS[1], self.WHITE, ui_date)
 
         # draw month
-        graphics.DrawText(canvas, self.font_sm, self.MONTH_POS[0], self.MONTH_POS[1], self.GREEN, ui_month)
+        graphics.DrawText(canvas, self.font_sm, self.MONTH_POS[0], self.MONTH_POS[1], self.WHITE, ui_month)
 
         # draw day
-        graphics.DrawText(canvas, self.font_sm, self.DAY_POS[0], self.DAY_POS[1], self.GREEN, ui_day)
+        graphics.DrawText(canvas, self.font_sm, self.DAY_POS[0], self.DAY_POS[1], self.WHITE, ui_day)
 
         # draw indoor temp
-        graphics.DrawText(canvas, self.font_md, self.INDOOR_POS[0], self.INDOOR_POS[1], self.GREEN, ui_indoor_temp)
+        graphics.DrawText(canvas, self.font_md, self.INDOOR_POS[0], self.INDOOR_POS[1], self.WHITE, ui_indoor_temp)
 
         # draw outdoor temp
-        graphics.DrawText(canvas, self.font_md, self.OUTDOOR_POS[0], self.OUTDOOR_POS[1], self.GREEN, ui_outdoor_temp)
+        graphics.DrawText(canvas, self.font_md, self.OUTDOOR_POS[0], self.OUTDOOR_POS[1], self.WHITE, ui_outdoor_temp)
 
         # draw high and low temp
         graphics.DrawText(canvas, self.font_sm, self.HIGH_POS[0], self.HIGH_POS[1], self.RED, ui_high_temp)
