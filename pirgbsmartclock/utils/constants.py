@@ -7,7 +7,7 @@ VENDOR_DIR = './vendor/'
 BLACK = graphics.Color(*RGB['black'])
 WHITE = graphics.Color(*RGB['lightgray'])
 RED = graphics.Color(*RGB['red'])
-GREEN = graphics.Color(*RGB['lightseagreen'])
+GREEN = graphics.Color(*RGB['green'])
 BLUE = graphics.Color(*RGB['blue'])
 
 FONT_LG = load_font(VENDOR_DIR + 'fonts/8x13B.bdf')
