@@ -94,8 +94,8 @@ class StockApi(Api):
             '^GSPC': 'S&P',
             '^DJI': 'Dow',
             '^IXIC': 'Nasdaq',
-            '^FTSE': 'FTSE 100',
-            '^N225': 'Nikkei 225',
+            '^FTSE': 'FTSE',
+            '^N225': 'Nikkei',
             '^VIX': 'Vix',
         }
         results = []

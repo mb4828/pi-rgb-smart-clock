@@ -34,7 +34,7 @@ def run_clock(message_queue):
             pass  # no new messages - continue
 
         clock.run(show_clock)
-        time.sleep(0.1)
+        time.sleep(0.09)
 
 
 def run_temper():

@@ -27,22 +27,29 @@ class Clock(GraphicsBase):
 
     def draw_ticker(self, canvas, stocks, holiday):
         # build the list of ticker elements
-        ticker_els = [(holiday, WHITE)]
+        ticker_els = []
+        if holiday:
+            ticker_els.append((f'| {holiday} |', WHITE))
         for stock in stocks:
-            ticker_els.append((stock.name, WHITE))
-            ticker_els.append((stock.percent, GREEN if stock.direction == 'up' else RED))
+            ticker_els.append((stock['name'], WHITE))
+            ticker_els.append((f'{stock["points"]} {stock["percent"]}', GREEN if stock['direction'] == 'up' else RED))
 
-        # draw each element in the ticker
+        # draw each element in the ticker twice to allow continuous scrolling and compute the ticker width
         draw_pos = self.ticker_x_pos
-        for el in ticker_els:
-            (text, color) = el
-            graphics.DrawText(canvas, FONT_SM, draw_pos, self.TICKER_Y_POS, color, text)
-            draw_pos += len(text)+1*4  # length of text + space * character width (4)
+        ticker_width = 0
+        for i in range(2):
+            for el in ticker_els:
+                (text, color) = el
+                graphics.DrawText(canvas, FONT_SM, draw_pos, self.TICKER_Y_POS, color, text)
+                text_width = (len(text)+1)*4 # (text length + space) * character width (4)
+                if i == 0:
+                    ticker_width += text_width
+                draw_pos += text_width
 
         # slide the ticker by decrementing the x position
         self.ticker_x_pos = self.ticker_x_pos - 1
-        if self.ticker_x_pos + draw_pos < 0:
-            self.ticker_x_pos = 0  # reset position
+        if self.ticker_x_pos + ticker_width <= 0:
+            self.ticker_x_pos = 0  # reset position once the first ticker has scrolled off the screen
 
     def run(self, show_clock):
         canvas = self.matrix
