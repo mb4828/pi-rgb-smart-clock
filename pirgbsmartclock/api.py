@@ -87,7 +87,7 @@ class ForecastApi(Api):
 
 
 class StockApi(Api):
-    FETCH_INTEVAL = 0.25  # every 15 seconds
+    FETCH_INTEVAL = 2  # every 2 minutes
 
     def _fetch():
         index_list = {
