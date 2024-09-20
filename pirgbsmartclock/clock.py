@@ -61,7 +61,7 @@ class Clock(GraphicsBase):
         temp = TemperApi.fetch()
         weather = WeatherApi.fetch()
         forecast = ForecastApi.fetch()[0] if len(ForecastApi.fetch()) > 0 else {}
-        stocks = StockApi.fetch()
+        stocks = [] #StockApi.fetch()
         holiday = HolidayApi.fetch()
 
         ui_time = now.strftime("%l:%M") if now.microsecond > 500000 else now.strftime("%l %M")
