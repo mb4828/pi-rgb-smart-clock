@@ -41,7 +41,7 @@ class Clock(GraphicsBase):
             for el in ticker_els:
                 (text, color) = el
                 graphics.DrawText(canvas, FONT_SM, draw_pos, self.TICKER_Y_POS, color, text)
-                text_width = (len(text)+1)*4 # (text length + space) * character width (4)
+                text_width = (len(text)+1)*4  # (text length + space) * character width (4)
                 if i == 0:
                     ticker_width += text_width
                 draw_pos += text_width
@@ -61,7 +61,7 @@ class Clock(GraphicsBase):
         temp = TemperApi.fetch()
         weather = WeatherApi.fetch()
         forecast = ForecastApi.fetch()[0] if len(ForecastApi.fetch()) > 0 else {}
-        stocks = [] #StockApi.fetch()
+        stocks = []  # StockApi.fetch()
         holiday = HolidayApi.fetch()
 
         ui_time = now.strftime("%l:%M") if now.microsecond > 500000 else now.strftime("%l %M")
@@ -74,7 +74,7 @@ class Clock(GraphicsBase):
         ui_high_temp = str(forecast.get('high_temp', 0))
         ui_low_temp = str(forecast.get('low_temp', 0))
         ui_is_rain_likely = forecast.get('rain_likely', False)
-        ui_is_high_humidity = weather.get('humidity', 0) > 60
+        ui_is_high_humidity = weather.get('dewpoint', 0) > 60
 
         canvas.Clear()
 
