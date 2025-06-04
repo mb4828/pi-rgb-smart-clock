@@ -14,7 +14,7 @@ from config import TOMORROWIO_API_KEY, TOMORROWIO_LOCATION
 
 
 class Api:
-    FETCH_INTEVAL = 10  # new data every 10 minutes
+    FETCH_INTEVAL = 15  # new data every 15 minutes
     next_fetch = datetime(1990, 1, 1)
     cached_data = {}
 

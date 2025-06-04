@@ -29,7 +29,7 @@ class Clock(GraphicsBase):
         # build the list of ticker elements
         ticker_els = []
         if holiday:
-            ticker_els.append((f'| {holiday} |', WHITE))
+            ticker_els.append((holiday, WHITE))
         for stock in stocks:
             ticker_els.append((stock['name'], WHITE))
             ticker_els.append((f'{stock["points"]} {stock["percent"]}', GREEN if stock['direction'] == 'up' else RED))
