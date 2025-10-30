@@ -15,8 +15,8 @@ class Clock(GraphicsBase):
     INDOOR_POS = (9, 31)
     OUTDOOR_ICON_POS = (22, 25)
     OUTDOOR_POS = (32, 31)
-    HIGH_POS = (45, 31)
-    LOW_POS = (55, 31)
+    HIGH_POS = (55, 31)
+    LOW_POS = (45, 31)
     ALERT_POS = (15, 1)
     TICKER_Y_POS = 22
     ticker_x_pos = 0
